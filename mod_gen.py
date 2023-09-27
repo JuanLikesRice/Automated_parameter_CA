@@ -1,10 +1,12 @@
-print("0-->char: ",chr(0))
-print("char \" \" -->: ",ord(' '))
 
 
 
+# Specify the file path (change this to your desired file path)
+file_path = "module_AUTOMATED.v"
+
+N_STE_BITS = 32
+Input_word_BITS = 8
 #[STE,[turn off if], [if on, turn on], start?, end]
-
 graph =[[1,["a"],[3,8],1,0],
         [2,["a"],[3,8],0,0],
         [3,["r"],[4]  ,0,1],
@@ -13,6 +15,8 @@ graph =[[1,["a"],[3,8],1,0],
         [6,["a"],[3,8],0,0],
         [7,["c"],[6]  ,1,0],
         [8,["t"],[]   ,0,1]]
+
+
 
 
 def STE_sense_vector(list,Input_word_BITS):
@@ -34,15 +38,6 @@ def STE_activates(list,N_STE_BITS):
     ste_vect_string = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i)-2))+num_i[2:]
     return ste_vect_string
 
-
-
-# Specify the file path (change this to your desired file path)
-file_path = "module_AUTOMATED.v"
-#str_var = "idkharhcgarhcbjsarbvck"#"barttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtar"
-
-
-N_STE_BITS = 8
-Input_word_BITS = 8
 
 
 N_STE_BITS_minus1 = N_STE_BITS - 1
@@ -73,7 +68,7 @@ with open(file_path, 'w') as file:
     
     file.write(f"module In{Input_word_BITS}BitTo{Input_word_BITS_val}OneHot ( \n \n    input wire [{Input_word_BITS-1}:0] input_data,\n    output wire [{Input_word_BITS_val-1}:0] one_hot_encoding\n);\n    reg [{Input_word_BITS_val-1}:0] one_hot_encoding_reg;\n    integer i;\n    always @(*) begin\n        one_hot_encoding_reg = {Input_word_BITS_val}'b0;\n        for (i = 0; i < {Input_word_BITS_val}; i = i + 1) begin\n            if (input_data == i)\n                one_hot_encoding_reg[i] = 1'b1;\n        end\n    end\n    assign one_hot_encoding = one_hot_encoding_reg;\nendmodule \n\n\n\n" )
 
-    file.write(f"\n module MatchConstant_AUTOMATED ( \n input wire [255:0] input_number, \n    output wire output_match \n ); \n    // Define the constant value to match against \n    parameter [255:0] CONSTANT_VALUE = {zero_Input_WORD}; // Change this to your desired constant value \n    wire [255:0] bitwise_and_result; \n    assign bitwise_and_result = input_number & CONSTANT_VALUE; // Perform bitwise AND between number1 and number2 \n    assign output_match =  |(bitwise_and_result);//(input_number == CONSTANT_VALUE) ? 1'b1 : 1'b0; \n  endmodule \n \n\n ")
+    file.write(f"\n module MatchConstant_AUTOMATED ( \n input wire [{Input_word_BITS_val-1}:0] input_number, \n    output wire output_match \n ); \n    // Define the constant value to match against \n    parameter [{Input_word_BITS_val-1}:0] CONSTANT_VALUE = {zero_Input_WORD}; // Change this to your desired constant value \n    wire [{Input_word_BITS_val-1}:0] bitwise_and_result; \n    assign bitwise_and_result = input_number & CONSTANT_VALUE; // Perform bitwise AND between number1 and number2 \n    assign output_match =  |(bitwise_and_result);//(input_number == CONSTANT_VALUE) ? 1'b1 : 1'b0; \n  endmodule \n \n\n ")
 
     # Write each line to the file one by one
     file.write("//Automated Tb STARTS Here\n")
@@ -87,7 +82,7 @@ with open(file_path, 'w') as file:
 
 #    file.write("#10; \n")
 #    file.write("//Automated Tb ENDS Here\n")
-    file.write("    )  (\n    input wire clk,         // Clock input \n    input wire  [7:0] input_number, // 8-bit word input \n")
+    file.write(f"    )  (\n    input wire clk,         // Clock input \n    input wire  [{Input_word_BITS-1}:0] input_number, // 8-bit word input \n")
     file.write(f"    output wire [{N_STE_BITS-1}:0] data_out            // Match vector output \n);\n\n")
     
     starting_string = "wire "
@@ -96,7 +91,7 @@ with open(file_path, 'w') as file:
     starting_string = starting_string + f"output_match_STE{N_STE_BITS};"
     
     file.write(f"{starting_string} \n")
-    file.write(f"wire [255:0] STE_encoding; \n\n\n")
+    file.write(f"wire [{Input_word_BITS_val-1}:0] STE_encoding; \n\n\n")
     
     file.write(f"In{Input_word_BITS}BitTo{Input_word_BITS_val}OneHot uut_1 (\n .input_data(input_number), \n .one_hot_encoding(STE_encoding)  \n ); \n \n ")
     
@@ -160,8 +155,7 @@ with open(file_path, 'w') as file:
         file.write(f"    .ActivationVector_STE{i+1}(ActivationVector_STE{i+1}), \n")
     file.write(f"    .ActivationVector_STE{N_STE_BITS}(ActivationVector_STE{N_STE_BITS}) \n")
 
-    #file.write("    )  (\n    input wire clk,         // Clock input \n    input wire  [7:0] input_number, // 8-bit word input \n")
-    #file.write(f"    output wire [{N_STE_BITS-1}:0] data_out            // Match vector output \n\n")
+
     file.write(f"\n ) word_to_STE_sensed (\n .clk(                 clk),             // Clock input\n .input_number( input_word), // 8-bit word input\n .data_out(   AW_vector_t0)        // Match vector output\n);\n \n")
 
 
@@ -207,7 +201,7 @@ with open(file_path, 'w') as file:
     start_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_start)-2))+num_i_start[2:]
     num_i_end =bin(end_vect_dec) 
     end_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_end)-2))+num_i_end[2:]
-    file.write(f"\n.start_vector({start_vector_str}), \n      .end_vector({end_vector_str}) ) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")
+    file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) ) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")
     
      
     #print(start_vector_str, end_vector_str)
