@@ -45,7 +45,7 @@ CA_Processor_8STE_8bitword #(
 
 */
 
- CA_Processor_8STE_8bitword #(
+CA_Processor_8STE_8bitword #(
       .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000000000000000000000), 
             .STE1_ACTIVATES(8'b10000100), 
      .ActivationVector_STE2(256'h0000000000000000000000000000000000000002000000000000000000000000), 
@@ -71,6 +71,7 @@ CA_Processor_8STE_8bitword #(
  .rpt_bt(rpt_bt),
  .Activated_vector_t0(Activated_vector_t0)
 );
+
 
 
 
@@ -326,55 +327,4 @@ endmodule
 
 
 
-
-
-module CA_Processor (
-    input wire clk, 
-    input wire rst,
-    input wire  [7:0] input_word,
-    output wire rpt_bt,
-    output wire [7:0] Activated_vector_t0
-);
-
-wire [7:0] AW_vector_t0;
-
-STE_MATCH_AUTOMATED_8bit_vector_8bit_word #(
-.ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000000000000000000000),  //STE 1,0 a - d97
-.ActivationVector_STE2(256'h0000000000000000000000000000000000000002000000000000000000000000),  //STE 2,0 a - d97
-.ActivationVector_STE3(256'h0000000000000000000000000000000000040000000000000000000000000000),  //STE 3,0 r - d114
-.ActivationVector_STE4(256'h0000000000000000000000000000000000100000000000000000000000000000),  //STE 4,0 t - d116
-.ActivationVector_STE5(256'h0000000000000000000000000000000000000004000000000000000000000000),  //STE 1,1 a - d98
-.ActivationVector_STE6(256'h0000000000000000000000000000000000000002000000000000000000000000),  //STE 2,1 a - d97
-.ActivationVector_STE7(256'h0000000000000000000000000000000000000008000000000000000000000000),  //STE 3,1 c - d99
-.ActivationVector_STE8(256'h0000000000000000000000000000000000100000000000000000000000000000)   //STE 4,1 t - d116
-
-) word_to_STE_sensed (
-.clk(            clk),             // Clock input
-.input_number( input_word), // 8-bit word input
-.data_out(       AW_vector_t0)        // Match vector output
-);
-
-Local_Match_AUTOMATED
-#(
-.start_vector(  8'b01010001 ),
-.end_vector(    8'b10001100 ),
-.STE1_ACTIVATES(8'b10000100 ),
-.STE2_ACTIVATES(8'b10000100 ),
-.STE3_ACTIVATES(8'b00001000 ),
-.STE4_ACTIVATES(8'b00000000 ),
-.STE5_ACTIVATES(8'b00000010 ),
-.STE6_ACTIVATES(8'b10000100 ),
-.STE7_ACTIVATES(8'b00010000 ),
-.STE8_ACTIVATES(8'b00000000 )
-
-) STE_local_match (
-  .clk(clk),                   // Clock input
-  .rst(rst),                   //reset signal      
-  .local_ste_sw(AW_vector_t0),                // 8-bit word input
-  .active_ste_sw(Activated_vector_t0),                // 8-bit word input;
-  .data_out(Activated_vector_t0),              // Match vector output
-  .report_bit(rpt_bt)             // Match vector output
-); 
-
-endmodule
 

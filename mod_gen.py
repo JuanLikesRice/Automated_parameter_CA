@@ -179,7 +179,7 @@ with open(file_path, 'w') as file:
     file.write(f"/* // Called with parameters, put this into your tb file\n\n\n")
     
     
-    file.write(f"module CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
+    file.write(f"CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
     start_vect_dec = 0   
     end_vect_dec   = 0
     for STE in graph:

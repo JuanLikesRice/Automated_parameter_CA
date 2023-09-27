@@ -279,7 +279,7 @@ Local_Match_AUTOMATED #(
 /* // Called with parameters, put this into your tb file
 
 
-module CA_Processor_8STE_8bitword #(
+CA_Processor_8STE_8bitword #(
       .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000000000000000000000), 
             .STE1_ACTIVATES(8'b10000100), 
      .ActivationVector_STE2(256'h0000000000000000000000000000000000000002000000000000000000000000), 
