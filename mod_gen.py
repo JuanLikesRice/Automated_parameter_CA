@@ -1,10 +1,11 @@
 
-
-
 # Specify the file path (change this to your desired file path)
 file_path = "module_AUTOMATED.v"
 
+#How many STE bits you need want tpo have
 N_STE_BITS = 32
+
+#how big input is, however the bigger this is, the more one hot wire is and may not compile on FPGA
 Input_word_BITS = 8
 #[STE,[turn off if], [if on, turn on], start?, end]
 graph =[[1,["a"],[3,8],1,0],
@@ -18,7 +19,7 @@ graph =[[1,["a"],[3,8],1,0],
 
 
 
-
+#Creates Bits for parameter based on Graph
 def STE_sense_vector(list,Input_word_BITS):
     Input_word_BITS_val = 2**(Input_word_BITS)
     Input_word_BITS_val_hex = int(Input_word_BITS_val /  4  )
@@ -31,7 +32,7 @@ def STE_sense_vector(list,Input_word_BITS):
     ste_vect_string =f"{Input_word_BITS_val}'h"+"0"*(Input_word_BITS_val_hex-(len(num_i)-2))+num_i[2:]
     return ste_vect_string
 def STE_activates(list,N_STE_BITS):
-    STE_fanout = 0#bin("0"*int(N_STE_BITS))
+    STE_fanout = 0 
     for i in range(len(list)):
         STE_fanout |= 2**(int((list[i])-1))
     num_i =bin(STE_fanout) 
@@ -47,15 +48,55 @@ zero_string = "0"
 zero_STE_BITS    = str(N_STE_BITS)+ "\'b" + zero_string*N_STE_BITS
 zero_Input_WORD =  str(Input_word_BITS_val)+ "\'h" + zero_string*Input_word_BITS_val_hex
 
-print(zero_STE_BITS)
-print(zero_Input_WORD)
 
 
 
-# MATCH MODULE
-print("Writing the match")
-# Open the file in write mode ('w' mode) and create it if it doesn't exist
+print(f"STE Bits: {N_STE_BITS}")
+print(f"Input Word {Input_word_BITS} which maps to {Input_word_BITS_val} 1-hot encoded")
+print(f"Empty STE Vector  :  {zero_STE_BITS}")
+print(f"Empty Encoding Vec:  {zero_Input_WORD}")
+print(f"")
+#print(zero_STE_BITS)
+#print(zero_Input_WORD)
+
+
+
+# MATCH MODULE --> 
 with open(file_path, 'w') as file:
+    
+    #Graph  With proper Bit parameters
+    file.write(f"/* // Called with parameters, put this into your tb file\n\n\n")
+    file.write(f"CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
+    start_vect_dec = 0   
+    end_vect_dec   = 0
+    for STE in graph:
+        #[1,["a"],[3,8],1,0]
+        STE_num = int(STE[0])
+        STE_sen = STE[1]
+        STE_act = STE[2]
+        STE_srt = STE[3]
+        STE_end = STE[4]
+        STE_sense_vector_str    = STE_sense_vector(STE_sen, Input_word_BITS)
+        STE_activate_vector_str = STE_activates(   STE_act, N_STE_BITS)
+        file.write(f"     .ActivationVector_STE{STE_num}({STE_sense_vector_str}), \n"),
+        file.write(f"            .STE{STE_num}_ACTIVATES({STE_activate_vector_str}), \n")
+        #print(STE_sense_vector_str)
+        #print(STE_activate_vector_str)    
+        if (STE_srt == 1):
+            start_vect_dec |= 2**(int(STE_num)-1)
+        if (STE_end == 1):
+            end_vect_dec   |= 2**(int(STE_num)-1)
+
+    num_i_start =bin(start_vect_dec) 
+    start_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_start)-2))+num_i_start[2:]
+    num_i_end =bin(end_vect_dec) 
+    end_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_end)-2))+num_i_end[2:]
+    file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) ) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")    
+    file.write(f"*/ \n\n\n\n\n")
+
+    
+    
+    
     file.write(f"module OneBitToFixedBitsRouter_AUTOMATED #(parameter SELECT_BITS = {zero_STE_BITS}) (\n    input wire input_bit,      // 1-bit input\n    output wire [{N_STE_BITS-1}:0] output_w  // {N_STE_BITS}-bit output\n);\n\n // Define the fixed selection pattern \n")
     
     starting_string = "assign  output_w = (SELECT_BITS & { "
@@ -150,7 +191,6 @@ with open(file_path, 'w') as file:
      
     file.write(f")\n(    input wire clk,\n    input wire rst,\n    input wire  [{Input_word_BITS-1}:0] input_word,\n    output wire rpt_bt,\n    output wire [{N_STE_BITS-1}:0] Activated_vector_t0 \n);\n\n   wire [{N_STE_BITS-1}:0] AW_vector_t0;\n")
     file.write(f"\n  STE_MATCH_AUTOMATED_{N_STE_BITS}bit_vector_{Input_word_BITS}bit_word  #(\n")
-    #file.write(f"")
     for i in range(N_STE_BITS-1):
         file.write(f"    .ActivationVector_STE{i+1}(ActivationVector_STE{i+1}), \n")
     file.write(f"    .ActivationVector_STE{N_STE_BITS}(ActivationVector_STE{N_STE_BITS}) \n")
@@ -166,50 +206,5 @@ with open(file_path, 'w') as file:
 
     file.write(f") STE_local_match (\n\n  .clk(clk),                   // Clock input\n  .rst(rst),               //reset signal      \n  .local_ste_sw(AW_vector_t0),                // n-bit STE input\n  .active_ste_sw(Activated_vector_t0),                // n-bit STE input;\n  .data_out(Activated_vector_t0),              // Match vector output\n  .report_bit(rpt_bt)             // Match vector output\n);\n \n endmodule \n")
     
-    print("FInished match, now global routing")
-# Print a message to confirm that the lines have been written
 
-
-    file.write(f"/* // Called with parameters, put this into your tb file\n\n\n")
-    
-    
-    file.write(f"CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
-    start_vect_dec = 0   
-    end_vect_dec   = 0
-    for STE in graph:
-        #[1,["a"],[3,8],1,0]
-        STE_num = int(STE[0])
-        STE_sen = STE[1]
-        STE_act = STE[2]
-        STE_srt = STE[3]
-        STE_end = STE[4]
-        
-        STE_sense_vector_str    = STE_sense_vector(STE_sen, Input_word_BITS)
-        STE_activate_vector_str = STE_activates(   STE_act, N_STE_BITS)
-        
-        file.write(f"     .ActivationVector_STE{STE_num}({STE_sense_vector_str}), \n"),
-        file.write(f"            .STE{STE_num}_ACTIVATES({STE_activate_vector_str}), \n")
-
-        #print(STE_sense_vector_str)
-        #print(STE_activate_vector_str)    
-        if (STE_srt == 1):
-            start_vect_dec |= 2**(int(STE_num)-1)
-        if (STE_end == 1):
-            end_vect_dec   |= 2**(int(STE_num)-1)
-
-    num_i_start =bin(start_vect_dec) 
-    start_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_start)-2))+num_i_start[2:]
-    num_i_end =bin(end_vect_dec) 
-    end_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_end)-2))+num_i_end[2:]
-    file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) ) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")
-    
-     
-    #print(start_vector_str, end_vector_str)
-    
-    
-    
-    file.write(f"*/")
-
-
-
-print(f"Lines have been written to '{file_path}'.")
+print(f"Verilog ha been written to '{file_path}'.")
