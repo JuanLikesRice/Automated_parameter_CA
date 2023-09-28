@@ -63,7 +63,8 @@ print(f"")
 
 # MATCH MODULE --> 
 with open(file_path, 'w') as file:
-    
+    file.write(f"`timescale 1ns / 1ps \n `default_nettype none\n\n\n")
+
     #Graph  With proper Bit parameters
     file.write(f"/* // Called with parameters, put this into your tb file\n\n\n")
     file.write(f"CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
@@ -91,7 +92,7 @@ with open(file_path, 'w') as file:
     start_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_start)-2))+num_i_start[2:]
     num_i_end =bin(end_vect_dec) 
     end_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_end)-2))+num_i_end[2:]
-    file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) ) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")    
+    file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) \n) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")    
     file.write(f"*/ \n\n\n\n\n")
 
     

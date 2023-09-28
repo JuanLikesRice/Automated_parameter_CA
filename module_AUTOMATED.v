@@ -1,3 +1,7 @@
+`timescale 1ps / 1ps 
+ `default_nettype none
+
+
 /* // Called with parameters, put this into your tb file
 
 
@@ -20,7 +24,8 @@ CA_Processor_32STE_8bitword #(
             .STE8_ACTIVATES(32'b00000000000000000000000000000000), 
 
       .start_vector(32'b00000000000000000000000001010001), 
-      .end_vector(  32'b00000000000000000000000010001100) ) CA_p_v1 ( 
+      .end_vector(  32'b00000000000000000000000010001100) 
+) CA_p_v1 ( 
 .clk(clk), 
   .rst(rst),
  .input_word(input_word),
