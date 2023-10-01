@@ -3,7 +3,7 @@
 file_path = "module_AUTOMATED.v"
 
 #How many STE bits you need want tpo have
-N_STE_BITS = 32
+N_STE_BITS = 8
 
 #how big input is, however the bigger this is, the more one hot wire is and may not compile on FPGA
 Input_word_BITS = 8

@@ -7,9 +7,9 @@ module top_module;
     reg clk, rst;
     wire rpt_bt;
     reg [7:0] input_word;
-   wire [31:0] Activated_vector_t0;
+   wire [7:0] Activated_vector_t0;
 
-
+/*
 CA_Processor_32STE_8bitword #(
       .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000000000000000000000), 
             .STE1_ACTIVATES(32'b00000000000000000000000010000100), 
@@ -36,8 +36,36 @@ CA_Processor_32STE_8bitword #(
  .rpt_bt(rpt_bt),
  .Activated_vector_t0(Activated_vector_t0)
 );
+*/
 
 
+CA_Processor_8STE_8bitword #(
+      .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000000000000000000000), 
+            .STE1_ACTIVATES(8'b10000100), 
+     .ActivationVector_STE2(256'h0000000000000000000000000000000000000002000000000000000000000000), 
+            .STE2_ACTIVATES(8'b10000100), 
+     .ActivationVector_STE3(256'h0000000000000000000000000000000000040000000000000000000000000000), 
+            .STE3_ACTIVATES(8'b00001000), 
+     .ActivationVector_STE4(256'h0000000000000000000000000000000000100000000000000000000000000000), 
+            .STE4_ACTIVATES(8'b00000000), 
+     .ActivationVector_STE5(256'h0000000000000000000000000000000000000004000000000000000000000000), 
+            .STE5_ACTIVATES(8'b00100000), 
+     .ActivationVector_STE6(256'h0000000000000000000000000000000000000002000000000000000000000000), 
+            .STE6_ACTIVATES(8'b10000100), 
+     .ActivationVector_STE7(256'h0000000000000000000000000000000000000008000000000000000000000000), 
+            .STE7_ACTIVATES(8'b00100000), 
+     .ActivationVector_STE8(256'h0000000000000000000000000000000000100000000000000000000000000000), 
+            .STE8_ACTIVATES(8'b00000000), 
+
+      .start_vector(8'b01010001), 
+      .end_vector(  8'b10001100) 
+) CA_p_v1 ( 
+.clk(clk), 
+  .rst(rst),
+ .input_word(input_word),
+ .rpt_bt(rpt_bt),
+ .Activated_vector_t0(Activated_vector_t0)
+);
 
 
 
