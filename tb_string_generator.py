@@ -4,7 +4,11 @@ print("char \" \" -->: ",ord(' '))
 
 # Specify the file path (change this to your desired file path)
 file_path = "tb_str.txt"
-str_var = "barttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtar"
+#str_var = "barttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtar"
+str_var = "bArTtBaRtXaTkShCfIwHaTaNaBaCaTaBaRcAhDuCtAdAaCaRcTrCaTrCaTcBaTbRcAtRnBaCaTySnCtAnBaCrNtAbTnArBxTaR"
+#str_var = "BARTTBARTXATKSHCFIWHATANABACATABARCAHDUCTADAACARCTRCATRCATCBATBRCATRNBACATYSNCTANBACRNTABTNARBXTAR"
+
+
 
 # Open the file in write mode ('w' mode) and create it if it doesn't exist
 with open(file_path, 'w') as file:

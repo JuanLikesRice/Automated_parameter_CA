@@ -40,21 +40,21 @@ CA_Processor_32STE_8bitword #(
 
 
 CA_Processor_8STE_8bitword #(
-      .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000000000000000000000), 
+      .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000020000000000000000), 
             .STE1_ACTIVATES(8'b10000100), 
-     .ActivationVector_STE2(256'h0000000000000000000000000000000000000002000000000000000000000000), 
+     .ActivationVector_STE2(256'h0000000000000000000000000000000000000002000000020000000000000000), 
             .STE2_ACTIVATES(8'b10000100), 
-     .ActivationVector_STE3(256'h0000000000000000000000000000000000040000000000000000000000000000), 
+     .ActivationVector_STE3(256'h0000000000000000000000000000000000040000000400000000000000000000), 
             .STE3_ACTIVATES(8'b00001000), 
-     .ActivationVector_STE4(256'h0000000000000000000000000000000000100000000000000000000000000000), 
+     .ActivationVector_STE4(256'h0000000000000000000000000000000000100000001000000000000000000000), 
             .STE4_ACTIVATES(8'b00000000), 
-     .ActivationVector_STE5(256'h0000000000000000000000000000000000000004000000000000000000000000), 
+     .ActivationVector_STE5(256'h0000000000000000000000000000000000000004000000040000000000000000), 
             .STE5_ACTIVATES(8'b00100000), 
-     .ActivationVector_STE6(256'h0000000000000000000000000000000000000002000000000000000000000000), 
+     .ActivationVector_STE6(256'h0000000000000000000000000000000000000002000000020000000000000000), 
             .STE6_ACTIVATES(8'b10000100), 
-     .ActivationVector_STE7(256'h0000000000000000000000000000000000000008000000000000000000000000), 
+     .ActivationVector_STE7(256'h0000000000000000000000000000000000000008000000080000000000000000), 
             .STE7_ACTIVATES(8'b00100000), 
-     .ActivationVector_STE8(256'h0000000000000000000000000000000000100000000000000000000000000000), 
+     .ActivationVector_STE8(256'h0000000000000000000000000000000000100000001000000000000000000000), 
             .STE8_ACTIVATES(8'b00000000), 
 
       .start_vector(8'b01010001), 
@@ -96,204 +96,202 @@ initial begin
 // ----------------------------------------------------------------
 
 //Automated Tb STARTS Here
-
-
 //Automated Tb STARTS Here
 input_word = 8'd98; // b
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd120; // x
+input_word = 8'd88; // X
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd107; // k
 #10; 
-input_word = 8'd115; // s
+input_word = 8'd83; // S
 #10; 
 input_word = 8'd104; // h
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd102; // f
 #10; 
-input_word = 8'd105; // i
+input_word = 8'd73; // I
 #10; 
 input_word = 8'd119; // w
 #10; 
-input_word = 8'd104; // h
+input_word = 8'd72; // H
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd78; // N
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
+#10; 
+input_word = 8'd67; // C
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd84; // T
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd66; // B
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd99; // c
 #10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd116; // t
-#10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd98; // b
-#10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd114; // r
-#10; 
-input_word = 8'd99; // c
-#10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd104; // h
 #10; 
-input_word = 8'd100; // d
+input_word = 8'd68; // D
 #10; 
 input_word = 8'd117; // u
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd100; // d
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd97; // a
+#10; 
+input_word = 8'd67; // C
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd99; // c
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd99; // c
-#10; 
-input_word = 8'd116; // t
-#10; 
-input_word = 8'd114; // r
-#10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd99; // c
+#10; 
+input_word = 8'd66; // B
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd98; // b
 #10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd116; // t
-#10; 
-input_word = 8'd98; // b
-#10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd99; // c
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd121; // y
 #10; 
-input_word = 8'd115; // s
+input_word = 8'd83; // S
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd78; // N
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd98; // b
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd120; // x
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 //Automated Tb ENDS Here
 

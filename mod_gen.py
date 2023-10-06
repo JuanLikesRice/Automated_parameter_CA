@@ -8,14 +8,14 @@ N_STE_BITS = 8
 #how big input is, however the bigger this is, the more one hot wire is and may not compile on FPGA
 Input_word_BITS = 8
 #[STE,[turn off if], [if on, turn on], start?, end]
-graph =[[1,["a"],[3,8],1,0],
-        [2,["a"],[3,8],0,0],
-        [3,["r"],[4]  ,0,1],
-        [4,["t"],[]   ,0,1],
-        [5,["b"],[6,] ,1,0],
-        [6,["a"],[3,8],0,0],
-        [7,["c"],[6]  ,1,0],
-        [8,["t"],[]   ,0,1]]
+graph =[[1,["a","A"],[3,8],1,0],
+        [2,["a","A"],[3,8],0,0],
+        [3,["r","R"],[4]  ,0,1],
+        [4,["t","T"],[]   ,0,1],
+        [5,["b","B"],[6,] ,1,0],
+        [6,["a","A"],[3,8],0,0],
+        [7,["c","C"],[6]  ,1,0],
+        [8,["t","T"],[]   ,0,1]]
 
 
 

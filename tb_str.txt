@@ -1,198 +1,198 @@
 //Automated Tb STARTS Here
 input_word = 8'd98; // b
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd120; // x
+input_word = 8'd88; // X
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd107; // k
 #10; 
-input_word = 8'd115; // s
+input_word = 8'd83; // S
 #10; 
 input_word = 8'd104; // h
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd102; // f
 #10; 
-input_word = 8'd105; // i
+input_word = 8'd73; // I
 #10; 
 input_word = 8'd119; // w
 #10; 
-input_word = 8'd104; // h
+input_word = 8'd72; // H
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd78; // N
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
+#10; 
+input_word = 8'd67; // C
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd84; // T
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd66; // B
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd99; // c
 #10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd116; // t
-#10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd98; // b
-#10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd114; // r
-#10; 
-input_word = 8'd99; // c
-#10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd104; // h
 #10; 
-input_word = 8'd100; // d
+input_word = 8'd68; // D
 #10; 
 input_word = 8'd117; // u
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd100; // d
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd97; // a
+#10; 
+input_word = 8'd67; // C
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd99; // c
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd99; // c
-#10; 
-input_word = 8'd116; // t
-#10; 
-input_word = 8'd114; // r
-#10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd99; // c
+#10; 
+input_word = 8'd66; // B
+#10; 
+input_word = 8'd97; // a
+#10; 
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd98; // b
 #10; 
-input_word = 8'd97; // a
-#10; 
-input_word = 8'd116; // t
-#10; 
-input_word = 8'd98; // b
-#10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd99; // c
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd121; // y
 #10; 
-input_word = 8'd115; // s
+input_word = 8'd83; // S
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd67; // C
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd78; // N
 #10; 
 input_word = 8'd116; // t
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd98; // b
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd110; // n
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd65; // A
 #10; 
 input_word = 8'd114; // r
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd66; // B
 #10; 
 input_word = 8'd120; // x
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd84; // T
 #10; 
 input_word = 8'd97; // a
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd82; // R
 #10; 
 //Automated Tb ENDS Here
