@@ -1,22 +1,43 @@
+import json
+import subprocess
+import math
+import ast
 
-# Specify the file path (change this to your desired file path)
 file_path = "module_AUTOMATED.v"
+reg_exp = "bat|bar|bart|ar|at|art|car|cat|cart"
+command = f"java -jar C:\juwan_projects\JSON_MAKER\exe.jar --nfa --json \"{str(reg_exp)}\" > graph.json"  # Replace with "python3" if you are using Python 3.x
+try:
+    output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, text=True)
+except subprocess.CalledProcessError as e:
+    print("Error occurred:", e)
+f = open('graph.json')
+data = json.load(f)
+f.close()
+
+Input_word_BITS = 8
+N_STE_BITS = 2**(math.ceil(math.log2(len(data)+1)))
+print("STE Bits Needed: ",N_STE_BITS )
+N_STE_BITS_minus1 = N_STE_BITS - 1
+Input_word_BITS_val = 2**(Input_word_BITS)
+Input_word_BITS_val_hex = int(Input_word_BITS_val /  4  )
+zero_string = "0"
+zero_STE_BITS    = str(N_STE_BITS)+ "\'b" + zero_string*N_STE_BITS
+zero_Input_WORD =  str(Input_word_BITS_val)+ "\'h" + zero_string*Input_word_BITS_val_hex
+
+
+    
+
+
+start_vect = list("0"*N_STE_BITS)
+end_vect   = list("0"*N_STE_BITS)
+
+
+
 
 #How many STE bits you need want tpo have
-N_STE_BITS = 8
-
+#N_STE_BITS = 8
 #how big input is, however the bigger this is, the more one hot wire is and may not compile on FPGA
-Input_word_BITS = 8
 #[STE,[turn off if], [if on, turn on], start?, end]
-graph =[[1,["a","A"],[3,8],1,0],
-        [2,["a","A"],[3,8],0,0],
-        [3,["r","R"],[4]  ,0,1],
-        [4,["t","T"],[]   ,0,1],
-        [5,["b","B"],[6,] ,1,0],
-        [6,["a","A"],[3,8],0,0],
-        [7,["c","C"],[6]  ,1,0],
-        [8,["t","T"],[]   ,0,1]]
-
 
 
 #Creates Bits for parameter based on Graph
@@ -34,19 +55,11 @@ def STE_sense_vector(list,Input_word_BITS):
 def STE_activates(list,N_STE_BITS):
     STE_fanout = 0 
     for i in range(len(list)):
-        STE_fanout |= 2**(int((list[i])-1))
+        STE_fanout |= 2**(int(int(list[i])-1))
     num_i =bin(STE_fanout) 
     ste_vect_string = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i)-2))+num_i[2:]
     return ste_vect_string
 
-
-
-N_STE_BITS_minus1 = N_STE_BITS - 1
-Input_word_BITS_val = 2**(Input_word_BITS)
-Input_word_BITS_val_hex = int(Input_word_BITS_val /  4  )
-zero_string = "0"
-zero_STE_BITS    = str(N_STE_BITS)+ "\'b" + zero_string*N_STE_BITS
-zero_Input_WORD =  str(Input_word_BITS_val)+ "\'h" + zero_string*Input_word_BITS_val_hex
 
 
 
@@ -70,28 +83,50 @@ with open(file_path, 'w') as file:
     file.write(f"CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
     start_vect_dec = 0   
     end_vect_dec   = 0
-    for STE in graph:
-        #[1,["a"],[3,8],1,0]
-        STE_num = int(STE[0])
-        STE_sen = STE[1]
-        STE_act = STE[2]
-        STE_srt = STE[3]
-        STE_end = STE[4]
-        STE_sense_vector_str    = STE_sense_vector(STE_sen, Input_word_BITS)
-        STE_activate_vector_str = STE_activates(   STE_act, N_STE_BITS)
-        file.write(f"     .ActivationVector_STE{STE_num}({STE_sense_vector_str}), \n"),
-        file.write(f"            .STE{STE_num}_ACTIVATES({STE_activate_vector_str}), \n")
-        #print(STE_sense_vector_str)
-        #print(STE_activate_vector_str)    
-        if (STE_srt == 1):
-            start_vect_dec |= 2**(int(STE_num)-1)
-        if (STE_end == 1):
-            end_vect_dec   |= 2**(int(STE_num)-1)
-
-    num_i_start =bin(start_vect_dec) 
-    start_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_start)-2))+num_i_start[2:]
-    num_i_end =bin(end_vect_dec) 
-    end_vector_str = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i_end)-2))+num_i_end[2:]
+    
+    
+    
+    for i in data:
+        STE_i = int(str(i))
+        if "init" in data[i]:
+            if (data[i]["init"] == "Always"):
+                start_vect[N_STE_BITS-STE_i] = "1"
+        if "final" in data[i]: 
+    #        print(data[i]["final"])       
+            if (data[i]["final"] == True or data[i]["final"] == "true" ):
+                end_vect[N_STE_BITS-STE_i] = "1"
+        if "to" in data[i]:
+            STE_act = ast.literal_eval(data[i]["to"])
+          #  STE_act = list( data[i].get("to", []))
+           # print(STE_act[0])
+            #STE_act =  data[i]["to"]
+        else: 
+            STE_act = []
+    
+        if "cc" in data[i]: 
+            STE_sense_vector_cc =  data[i]["cc"]
+        else: 
+            STE_sense_vector_cc = zero_string*Input_word_BITS_val_hex
+            
+       
+        STE_sense_vector_str =  f"{Input_word_BITS_val}'h" + STE_sense_vector_cc
+        print("ere",STE_act)
+        STE_activate_vector_str = STE_activates(STE_act, N_STE_BITS)
+        file.write(f"     .ActivationVector_STE{STE_i}({STE_sense_vector_str}), \n"),
+        file.write(f"            .STE{STE_i}_ACTIVATES({STE_activate_vector_str}), \n")
+    
+    
+    
+    start_vect = ''.join(start_vect)
+    print(start_vect)
+    end_vect = ''.join(end_vect)
+    print(end_vect)
+    
+    
+    
+  
+    start_vector_str = f"{N_STE_BITS}'b"+ start_vect
+    end_vector_str = f"{N_STE_BITS}'b"+ end_vect
     file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) \n) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")    
     file.write(f"*/ \n\n\n\n\n")
 
