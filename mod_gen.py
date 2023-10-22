@@ -3,9 +3,17 @@ import subprocess
 import math
 import ast
 
+
+#Varible that should be changed
+reg_exp = "bat|bar|bart|ar|at|art|car|cat|cart*a+g"
+Input_word_BITS = 8
 file_path = "module_AUTOMATED.v"
-reg_exp = "bat|bar|bart|ar|at|art|car|cat|cart"
-command = f"java -jar C:\juwan_projects\JSON_MAKER\exe.jar --nfa --json \"{str(reg_exp)}\" > graph.json"  # Replace with "python3" if you are using Python 3.x
+
+
+#CODE START
+#creates the json file to parse
+command = f"java -jar C:\juwan_projects\JSON_MAKER\exe.jar --nfa --json \"{str(reg_exp)}\" > graph.json"  # Replace with "/exe.jar file path if need be"
+#read the json file and use as varible
 try:
     output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, text=True)
 except subprocess.CalledProcessError as e:
@@ -14,44 +22,18 @@ f = open('graph.json')
 data = json.load(f)
 f.close()
 
-Input_word_BITS = 8
+
+#varibles needed for STE diagram
 N_STE_BITS = 2**(math.ceil(math.log2(len(data)+1)))
-print("STE Bits Needed: ",N_STE_BITS )
 N_STE_BITS_minus1 = N_STE_BITS - 1
 Input_word_BITS_val = 2**(Input_word_BITS)
 Input_word_BITS_val_hex = int(Input_word_BITS_val /  4  )
 zero_string = "0"
 zero_STE_BITS    = str(N_STE_BITS)+ "\'b" + zero_string*N_STE_BITS
 zero_Input_WORD =  str(Input_word_BITS_val)+ "\'h" + zero_string*Input_word_BITS_val_hex
-
-
-    
-
-
 start_vect = list("0"*N_STE_BITS)
 end_vect   = list("0"*N_STE_BITS)
 
-
-
-
-#How many STE bits you need want tpo have
-#N_STE_BITS = 8
-#how big input is, however the bigger this is, the more one hot wire is and may not compile on FPGA
-#[STE,[turn off if], [if on, turn on], start?, end]
-
-
-#Creates Bits for parameter based on Graph
-def STE_sense_vector(list,Input_word_BITS):
-    Input_word_BITS_val = 2**(Input_word_BITS)
-    Input_word_BITS_val_hex = int(Input_word_BITS_val /  4  )
-
-    num_i_bit = 0
-    for i in range(len(list)):
-        str_num = ord(list[i])
-        num_i_bit += 2**(str_num)
-    num_i =hex(num_i_bit) 
-    ste_vect_string =f"{Input_word_BITS_val}'h"+"0"*(Input_word_BITS_val_hex-(len(num_i)-2))+num_i[2:]
-    return ste_vect_string
 def STE_activates(list,N_STE_BITS):
     STE_fanout = 0 
     for i in range(len(list)):
@@ -60,18 +42,12 @@ def STE_activates(list,N_STE_BITS):
     ste_vect_string = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i)-2))+num_i[2:]
     return ste_vect_string
 
-
-
-
-
+print("STE Bits Needed: ",N_STE_BITS )
 print(f"STE Bits: {N_STE_BITS}")
 print(f"Input Word {Input_word_BITS} which maps to {Input_word_BITS_val} 1-hot encoded")
 print(f"Empty STE Vector  :  {zero_STE_BITS}")
 print(f"Empty Encoding Vec:  {zero_Input_WORD}")
 print(f"")
-#print(zero_STE_BITS)
-#print(zero_Input_WORD)
-
 
 
 # MATCH MODULE --> 
@@ -92,14 +68,11 @@ with open(file_path, 'w') as file:
             if (data[i]["init"] == "Always"):
                 start_vect[N_STE_BITS-STE_i] = "1"
         if "final" in data[i]: 
-    #        print(data[i]["final"])       
             if (data[i]["final"] == True or data[i]["final"] == "true" ):
                 end_vect[N_STE_BITS-STE_i] = "1"
         if "to" in data[i]:
             STE_act = ast.literal_eval(data[i]["to"])
-          #  STE_act = list( data[i].get("to", []))
-           # print(STE_act[0])
-            #STE_act =  data[i]["to"]
+
         else: 
             STE_act = []
     
@@ -110,7 +83,7 @@ with open(file_path, 'w') as file:
             
        
         STE_sense_vector_str =  f"{Input_word_BITS_val}'h" + STE_sense_vector_cc
-        print("ere",STE_act)
+       # print("ere",STE_act)
         STE_activate_vector_str = STE_activates(STE_act, N_STE_BITS)
         file.write(f"     .ActivationVector_STE{STE_i}({STE_sense_vector_str}), \n"),
         file.write(f"            .STE{STE_i}_ACTIVATES({STE_activate_vector_str}), \n")
@@ -118,12 +91,9 @@ with open(file_path, 'w') as file:
     
     
     start_vect = ''.join(start_vect)
-    print(start_vect)
+   # print(start_vect)
     end_vect = ''.join(end_vect)
-    print(end_vect)
-    
-    
-    
+    #print(end_vect)    
   
     start_vector_str = f"{N_STE_BITS}'b"+ start_vect
     end_vector_str = f"{N_STE_BITS}'b"+ end_vect
@@ -132,7 +102,7 @@ with open(file_path, 'w') as file:
 
     
     
-    
+    #MMODULE UBSTANTATION BEGIN
     file.write(f"module OneBitToFixedBitsRouter_AUTOMATED #(parameter SELECT_BITS = {zero_STE_BITS}) (\n    input wire input_bit,      // 1-bit input\n    output wire [{N_STE_BITS-1}:0] output_w  // {N_STE_BITS}-bit output\n);\n\n // Define the fixed selection pattern \n")
     
     starting_string = "assign  output_w = (SELECT_BITS & { "
@@ -244,3 +214,22 @@ with open(file_path, 'w') as file:
     
 
 print(f"Verilog ha been written to '{file_path}'.")
+
+
+
+'''
+
+
+def STE_sense_vector(list,Input_word_BITS):
+    Input_word_BITS_val = 2**(Input_word_BITS)
+    Input_word_BITS_val_hex = int(Input_word_BITS_val /  4  )
+
+    num_i_bit = 0
+    for i in range(len(list)):
+        str_num = ord(list[i])
+        num_i_bit += 2**(str_num)
+    num_i =hex(num_i_bit) 
+    ste_vect_string =f"{Input_word_BITS_val}'h"+"0"*(Input_word_BITS_val_hex-(len(num_i)-2))+num_i[2:]
+    return ste_vect_string
+
+'''
