@@ -56,7 +56,6 @@ CA_Processor_8STE_8bitword #(
             .STE7_ACTIVATES(8'b00100000), 
      .ActivationVector_STE8(256'h0000000000000000000000000000000000100000001000000000000000000000), 
             .STE8_ACTIVATES(8'b00000000), 
-
       .start_vector(8'b01010001), 
       .end_vector(  8'b10001100) 
 ) CA_p_v1 ( 
@@ -69,6 +68,10 @@ CA_Processor_8STE_8bitword #(
 
 
 
+reg clk, rst;
+wire rpt_bt;
+reg [7:0] input_word;
+wire [31:0] Activated_vector_t0;
 
 CA_Processor_32STE_8bitword #(
       .ActivationVector_STE1(256'h0000000000000000000000000000000000000004000000000000000000000000), 
@@ -140,9 +143,9 @@ CA_Processor_32STE_8bitword #(
 
 
 always begin
-    #8; 
+    #5; 
     clk = ~clk; // Toggle the clock every 5 time units
-    #2
+    #5
     clk = ~clk;
     //$display("Time=%0t: A=%d, B=%d, result=%d", $time, A, B, result);
     //#3;  // Toggle the clock every 5 time units
@@ -164,208 +167,210 @@ initial begin
 
 // ----------------------------------------------------------------
 
+
+
+
 //Automated Tb STARTS Here
-//Automated Tb STARTS Here
-input_word = 8'd98; // b
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd66; // B
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd82; // R
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd88; // X
+input_word = 8'd120; // x, hex 78
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd107; // k
+input_word = 8'd107; // k, hex 6b
 #10; 
-input_word = 8'd83; // S
+input_word = 8'd115; // s, hex 73
 #10; 
-input_word = 8'd104; // h
+input_word = 8'd104; // h, hex 68
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd102; // f
+input_word = 8'd102; // f, hex 66
 #10; 
-input_word = 8'd73; // I
+input_word = 8'd105; // i, hex 69
 #10; 
-input_word = 8'd119; // w
+input_word = 8'd119; // w, hex 77
 #10; 
-input_word = 8'd72; // H
+input_word = 8'd104; // h, hex 68
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd78; // N
+input_word = 8'd110; // n, hex 6e
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd66; // B
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd66; // B
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd82; // R
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd104; // h
+input_word = 8'd104; // h, hex 68
 #10; 
-input_word = 8'd68; // D
+input_word = 8'd100; // d, hex 64
 #10; 
-input_word = 8'd117; // u
+input_word = 8'd117; // u, hex 75
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd100; // d
+input_word = 8'd100; // d, hex 64
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd82; // R
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd66; // B
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd82; // R
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd99; // c
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd82; // R
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd110; // n, hex 6e
 #10; 
-input_word = 8'd66; // B
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd121; // y
+input_word = 8'd121; // y, hex 79
 #10; 
-input_word = 8'd83; // S
+input_word = 8'd115; // s, hex 73
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd110; // n, hex 6e
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd110; // n, hex 6e
 #10; 
-input_word = 8'd66; // B
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd67; // C
+input_word = 8'd99; // c, hex 63
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd78; // N
+input_word = 8'd110; // n, hex 6e
 #10; 
-input_word = 8'd116; // t
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd98; // b
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd110; // n
+input_word = 8'd110; // n, hex 6e
 #10; 
-input_word = 8'd65; // A
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd114; // r
+input_word = 8'd114; // r, hex 72
 #10; 
-input_word = 8'd66; // B
+input_word = 8'd98; // b, hex 62
 #10; 
-input_word = 8'd120; // x
+input_word = 8'd120; // x, hex 78
 #10; 
-input_word = 8'd84; // T
+input_word = 8'd116; // t, hex 74
 #10; 
-input_word = 8'd97; // a
+input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd82; // R
+input_word = 8'd114; // r, hex 72
 #10; 
 //Automated Tb ENDS Here
 
 
-//Automated Tb ENDS Here
+
 input_word = 8'd0;
 #10; 
 input_word = 8'd0;

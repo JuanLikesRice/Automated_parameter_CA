@@ -5,7 +5,7 @@ import ast
 
 
 #Varible that should be changed
-reg_exp = "bat|bar|bart|ar|at|art|car|cat|cart*a+g"
+reg_exp = "bat|bar|bart|ar|at|art|car|cat|cart"
 Input_word_BITS = 8
 file_path = "module_AUTOMATED.v"
 
@@ -42,13 +42,23 @@ def STE_activates(list,N_STE_BITS):
     ste_vect_string = f"{N_STE_BITS}'b"+"0"*(N_STE_BITS-(len(num_i)-2))+num_i[2:]
     return ste_vect_string
 
-print("STE Bits Needed: ",N_STE_BITS )
-print(f"STE Bits: {N_STE_BITS}")
-print(f"Input Word {Input_word_BITS} which maps to {Input_word_BITS_val} 1-hot encoded")
-print(f"Empty STE Vector  :  {zero_STE_BITS}")
-print(f"Empty Encoding Vec:  {zero_Input_WORD}")
-print(f"")
 
+
+def STE_to(hex_string,Input_word_BITS):
+    decimal_number = int(hex_string, 16)
+    #print(decimal_number)
+    listy = []
+    for i in range((2**Input_word_BITS)):
+        high = 2**(i)
+        if high == high & decimal_number:
+            listy.append(i)
+    return listy
+
+
+#print(f"")
+
+
+graph_dict = {}
 
 # MATCH MODULE --> 
 with open(file_path, 'w') as file:
@@ -59,23 +69,26 @@ with open(file_path, 'w') as file:
     file.write(f"CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
     start_vect_dec = 0   
     end_vect_dec   = 0
-    
-    
-    
     for i in data:
         STE_i = int(str(i))
+        STE_point_dict = {}
+        STE_point_name = f'STE{STE_i}'
         if "init" in data[i]:
             if (data[i]["init"] == "Always"):
                 start_vect[N_STE_BITS-STE_i] = "1"
+                STE_point_dict["init"] = True
+            else:
+                STE_point_dict["init"] = False        
         if "final" in data[i]: 
             if (data[i]["final"] == True or data[i]["final"] == "true" ):
                 end_vect[N_STE_BITS-STE_i] = "1"
+                STE_point_dict["final"] = True
+            else:
+                STE_point_dict["final"] = False
         if "to" in data[i]:
             STE_act = ast.literal_eval(data[i]["to"])
-
         else: 
             STE_act = []
-    
         if "cc" in data[i]: 
             STE_sense_vector_cc =  data[i]["cc"]
         else: 
@@ -85,10 +98,14 @@ with open(file_path, 'w') as file:
         STE_sense_vector_str =  f"{Input_word_BITS_val}'h" + STE_sense_vector_cc
        # print("ere",STE_act)
         STE_activate_vector_str = STE_activates(STE_act, N_STE_BITS)
+        STE_point_dict["to"] = STE_act
+        STE_point_dict["cc"] = STE_to(STE_sense_vector_cc,Input_word_BITS)
+        
+        
         file.write(f"     .ActivationVector_STE{STE_i}({STE_sense_vector_str}), \n"),
         file.write(f"            .STE{STE_i}_ACTIVATES({STE_activate_vector_str}), \n")
     
-    
+        graph_dict[STE_i] = STE_point_dict 
     
     start_vect = ''.join(start_vect)
    # print(start_vect)
@@ -99,8 +116,6 @@ with open(file_path, 'w') as file:
     end_vector_str = f"{N_STE_BITS}'b"+ end_vect
     file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) \n) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")    
     file.write(f"*/ \n\n\n\n\n")
-
-    
     
     #MMODULE UBSTANTATION BEGIN
     file.write(f"module OneBitToFixedBitsRouter_AUTOMATED #(parameter SELECT_BITS = {zero_STE_BITS}) (\n    input wire input_bit,      // 1-bit input\n    output wire [{N_STE_BITS-1}:0] output_w  // {N_STE_BITS}-bit output\n);\n\n // Define the fixed selection pattern \n")
@@ -213,9 +228,29 @@ with open(file_path, 'w') as file:
     file.write(f") STE_local_match (\n\n  .clk(clk),                   // Clock input\n  .rst(rst),               //reset signal      \n  .local_ste_sw(AW_vector_t0),                // n-bit STE input\n  .active_ste_sw(Activated_vector_t0),                // n-bit STE input;\n  .data_out(Activated_vector_t0),              // Match vector output\n  .report_bit(rpt_bt)             // Match vector output\n);\n \n endmodule \n")
     
 
-print(f"Verilog ha been written to '{file_path}'.")
+graph_dict["STE_NUM"]         = len(data)
+graph_dict["STE_BITS"]         = N_STE_BITS
+
+graph_dict["reg_exp"]         = reg_exp
+graph_dict["Input_word_BITS"] = Input_word_BITS
+
+file_path_graph = "graph_dict.json"
+
+with open(file_path_graph, 'w') as json_file:
+    json.dump(graph_dict, json_file)
+
+print("STE Bits Needed: ",len(data) )
+print(f"STE Bits: {N_STE_BITS}")
+print(f"Input Word {Input_word_BITS} which maps to {Input_word_BITS_val} 1-hot encoded")
+print(f"Empty STE Vector  :  {zero_STE_BITS}")
+print(f"Empty Encoding Vec:  {zero_Input_WORD}\n")
+print(f"Verilog ha been written to '{file_path}'.\n\n\n")
+print(f"Dictionary has been written to '{file_path_graph}' in JSON format.")
 
 
+    
+    
+    
 
 '''
 
