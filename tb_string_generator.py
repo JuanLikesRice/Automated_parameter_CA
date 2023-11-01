@@ -9,7 +9,7 @@ str_var = "bArTtBaRtXaTkShCfIwHaTaNaBaCaTaBaRcAhDuCtAdAaCaRcTrCaTrCaTcBaTbRcAtRn
 
 file_path = "tb_str"
 file_path_tb_v = file_path + ".txt"
-file_path_coe  = file_path + "_fake.coe"
+file_path_coe  = file_path + ".coe"
 # Open the file in write mode ('w' mode) and create it if it doesn't exist
 with open(file_path_tb_v, 'w') as file:
     # Write each line to the file one by one
@@ -20,7 +20,7 @@ with open(file_path_tb_v, 'w') as file:
         file.write("#10; \n")
     file.write("//Automated Tb ENDS Here\n")
 # Print a message to confirm that the lines have been written
-print(f"Lines have been written to '{file_path}'.")
+print(f"Lines have been written to '{file_path_tb_v}'.")
 
 
 
@@ -38,6 +38,6 @@ with open(file_path_coe, 'w') as file:
     file.write(f"{str_num};\n")
     #file.write("//Automated Tb ENDS Here\n")
 # Print a message to confirm that the lines have been written
-print(f"Lines have been written to '{file_path}'.")
+print(f"Lines have been written to '{file_path_coe}'.")
 #memory_initialization_radix=16;
 #memory_initialization_vector=ff;
