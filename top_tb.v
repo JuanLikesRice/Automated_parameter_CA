@@ -1,9 +1,91 @@
-`timescale 1ns / 1ps
-`default_nettype none
+`timescale 1ps / 1ps 
+ `default_nettype none
 
+module top_module();
 
-module top_module;
+    //Bram write to  
+    //reg [7:0] data_address;
+    //reg we;
+    //reg [8:0] write_data;
+
+    reg clk;
+    wire [7:0] LED_test;
+    reg  [7:0] SW_test, BTN_test; 
+    wire UART_RXD_OUT;
+
+    top_module_fpga testy (
+    .CLK(clk),
+    .SW(SW_test),//[7:0],
+    .BTN(BTN_test), //[7:0] 
+    .UART_RXD_OUT(UART_RXD_OUT),
+    .LED(LED_test) // [7:0]
+    );
+
+    always begin
+        #2;
+        clk = ~clk; // Toggle the clock every 5 time units
+        #2; 
+        clk = ~clk; // Toggle the clock every 5 time units
+    end
+
+//start: ____--__________________--________________ --> INCR address, reads memory from BRAM
+//utsrt: ________--__________________--_____________
+//clk    --__--__--__--__--__--__--__--__--__--__--
+// Testbench stimulus
+
+    initial begin
+        $display("Simulation started");
+        $dumpfile("testbench.vcd");
+        $dumpvars(0, top_module);
+        clk = 0;
+        SW_test  = 8'b0;
+        BTN_test = 8'b0;
+        #100
+
+        //BTN_test[3] = 1'b1;
+        #4000
+        BTN_test[3] = 1'b0;
+        #70
+        BTN_test[3] = 1'b1;
+        #4000
+        BTN_test[3] = 1'b0;
+        #2000
+
+        BTN_test[4] = 1'b1;
+        #4000
+        BTN_test[4] = 1'b0;
+        #8000
+
+        BTN_test[4] = 1'b1;
+        #4000
+        BTN_test[4] = 1'b0;
+
+        #35_0000/*
+        BTN_test[4] = 1'b1;
+        #100
+        BTN_test[4] = 1'b0;
+        #15004
+*/
+        $display("Simulation finished");
+        $finish;
+        //$stop; // Stop simulation
+    end
+
+endmodule
+
 /*
+blk_mem_gen_0 your_instance_name (
+  .clka(CLK),    // input wire clka
+  .ena(1'b1),      // input wire ena
+  .wea(1'b0),      // input wire [0 : 0] wea
+  .addra(data_address),  // input wire [9 : 0] addra
+  .dina(8'd0),    // input wire [7 : 0] dina
+  .douta(bram_result)  // output wire [7 : 0] douta
+);
+*/
+/*
+module top_module;
+
     reg clk, rst;
     wire rpt_bt;
     reg [7:0] input_word;
@@ -36,9 +118,9 @@ CA_Processor_32STE_8bitword #(
  .rpt_bt(rpt_bt),
  .Activated_vector_t0(Activated_vector_t0)
 );
-*/
 
-/*
+
+
 CA_Processor_8STE_8bitword #(
       .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000020000000000000000), 
             .STE1_ACTIVATES(8'b10000100), 
@@ -64,7 +146,7 @@ CA_Processor_8STE_8bitword #(
  .input_word(input_word),
  .rpt_bt(rpt_bt),
  .Activated_vector_t0(Activated_vector_t0)
-);*/
+);
 
 
 
@@ -428,3 +510,4 @@ module Buffer (
     assign output_data = buffer[N-1]; // Output the data from the last cycle of the buffer
 
 endmodule
+*/
