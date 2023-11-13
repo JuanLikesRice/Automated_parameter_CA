@@ -3,13 +3,13 @@
 
 
 module top_module;
-
+/*
     reg clk, rst;
     wire rpt_bt;
     reg [7:0] input_word;
    wire [31:0] Activated_vector_t0;
 
-/*
+
 CA_Processor_32STE_8bitword #(
       .ActivationVector_STE1(256'h0000000000000000000000000000000000000002000000000000000000000000), 
             .STE1_ACTIVATES(32'b00000000000000000000000010000100), 
@@ -140,7 +140,19 @@ CA_Processor_32STE_8bitword #(
 );
 
 
+// parameter N = 8; // Number of cycles in the buffer
+//    parameter M = 8; // Width of the input data
+// Instantiate the Buffer module
 
+wire [7:0] buffered_data;
+
+Buffer #(.N(1), .M(8)) buffer_inst (
+       .clk(clk),
+       .input_data(input_word),
+       .enable(1'b1),
+       .reset(rst),
+       .output_data(buffered_data)
+);
 
 always begin
     #5; 
@@ -160,25 +172,25 @@ initial begin
     $dumpfile("testbench.vcd");
     $dumpvars(0, top_module);
     clk = 0;
-    rst = 0;
+    rst = 1;
     input_word = 8'h00;
     #10;
-    rst = 0;
-
+    #10;
+    #12;
 // ----------------------------------------------------------------
 
 
-
+rst = 0;
 
 //Automated Tb STARTS Here
 input_word = 8'd98; // b, hex 62
 #10; 
 input_word = 8'd97; // a, hex 61
 #10; 
-input_word = 8'd114; // r, hex 72
-#10; 
-input_word = 8'd116; // t, hex 74
-#10; 
+//input_word = 8'd114; // r, hex 72
+//#10; 
+//input_word = 8'd116; // t, hex 74
+//#10; 
 input_word = 8'd116; // t, hex 74
 #10; 
 input_word = 8'd98; // b, hex 62
@@ -388,9 +400,31 @@ end
 
 endmodule
 
+module Buffer (
+    input wire clk,       // Clock signal
+    input wire [M-1:0] input_data, // M-bit input data
+    input wire enable,    // Enable signal
+    input wire reset,     // Reset signal (active high)
+    output wire [M-1:0] output_data // M-bit output data
+);
+    parameter N = 8; // Number of cycles in the buffer
+    parameter M = 8; // Width of the input data
 
+    reg [M-1:0] buffer [0:N-1]; // M-bit wide buffer with N cycles
 
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (integer i = 0; i < N; i = i + 1) begin
+                buffer[i] <= {M{1'b0}}; // Reset all elements in the buffer to 0
+            end
+        end else if (enable) begin
+            for (integer i = N-1; i > 0; i = i - 1) begin
+                buffer[i] <= buffer[i-1]; // Shift data in the buffer
+            end
+            buffer[0] <= input_data; // Load input data into the first position of the buffer
+        end
+    end
 
+    assign output_data = buffer[N-1]; // Output the data from the last cycle of the buffer
 
-
-
+endmodule

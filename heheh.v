@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+/*`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Setup for 9600 Baud Rate
 // For 9600 baud with 100MHz FPGA clock: 
@@ -116,7 +116,7 @@ module uart_state_machine (
                         tx <= 1'b1;
                         data[8:1] <= data_in;
                         busy <= 1'b1;
-                    end else begin
+                    end else begin  
                     tx <= 1'b1;
                     busy <= 1'b0;
                     state <= IDLE_STATE;
@@ -200,6 +200,8 @@ module pulse_generator #(
         end
     end
 endmodule
+*/
+
 
 /*
 module pulse_two_gen (                                            

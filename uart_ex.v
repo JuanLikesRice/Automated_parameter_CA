@@ -1,3 +1,4 @@
+/*
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Setup for 9600 Baud Rate
@@ -197,3 +198,4 @@ module one_pulse_x2(
     end                                                                            
     assign pulse = r_pulse;                                                               
 endmodule     
+*/
