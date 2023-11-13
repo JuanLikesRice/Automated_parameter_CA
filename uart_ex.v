@@ -18,19 +18,63 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+module debounce(
+    input  wire         clk_in,     // Clock input
+    input  wire         rst_in,     // Reset input
+    input  wire         bouncey_in, // Raw input to the system
+    output wire         wire_clean_out    // Debounced output
+);
+
+   reg [24:0] count; // Counter for debounce (25 bits for a 100 MHz clock)
+   reg old, clean_out;
+   assign wire_clean_out = clean_out;
+   // parameter max_cyc = 25'd12_499_999;//25'd100
+    parameter max_cyc = 25'd100;
+
+initial begin 
+    count <= 25'b0;
+    old <= 1'b0;
+    clean_out <= 1'b0;
+end
+
+   always @(posedge clk_in or posedge rst_in) begin
+        if (rst_in) begin
+            count <= 25'b0;
+            old <= 1'b0;
+            clean_out <= 1'b0;
+        end else begin
+            if (bouncey_in == old) begin
+                if (count < max_cyc) begin
+                    count <= count + 1;
+                end
+            end else begin
+                count <= 25'b0;
+            end
+
+            if (count == max_cyc) begin
+                clean_out <= bouncey_in;
+            end
+
+            old <= bouncey_in;
+        end
+   end
+
+endmodule
 
 
 module uart_stream_contrl (
 input  wire bud9600_gen,
 input  wire uart_reset_button,
 input  wire tx_busy,
+input wire [31:0] max_write_address,
 output wire [31:0] signal_data_address_uart_incr,
 output wire signal_enable_uart,
 output wire signal_start_enable_uart
 );
  
-
-parameter address_range = 10'h3FF;
+wire [31:0] address_range, address_range_1;
+assign address_range_1 = max_write_address +  32'd2;
+assign address_range = address_range_1 << 3;
 reg signal_enable_uart_r, signal_start_enable_uart_r;
 reg [31:0] signal_data_address_uart_incr_r;
 
@@ -93,12 +137,9 @@ end
 
 always @ (posedge CLK_FPGA or posedge computation_reset_button) begin
 
-    if (global_rst) begin
-    bram_data_address_comp_reg <= 32'd0;
-    reg_enable_comp_reg        <=  1'b0;
-    end else if (computation_reset_button) begin
+   if (computation_reset_button) begin
         reg_enable_comp_reg <= 1'b1;        // this means that this state is busy and bram should only write to BRAM
-        bram_data_address_comp_reg <= 8'b0; // Reset the register to 0 when reset is active
+        bram_data_address_comp_reg <= 32'd0; // Reset the register to 0 when reset is active
     end else 
     if (bram_data_address_comp_reg < address_range_param_read) begin
         reg_enable_comp_reg <= 1'b1;
@@ -383,262 +424,267 @@ module BRAM (
     initial begin
 reg_last_written_data <= 8'b0;
 reg_last_written_addr <= 8'b0;
-memory[0] <=  9'h062;
-memory[1] <=  9'h061;
-memory[2] <=  9'h072;
-memory[3] <=  9'h074;
-memory[4] <=  9'h074;
-memory[5] <=  9'h062;
-memory[6] <=  9'h061;
-memory[7] <=  9'h072;
-memory[8] <=  9'h074;
-memory[9] <=  9'h078;
-memory[10] <=  9'h061;
-memory[11] <=  9'h074;
-memory[12] <=  9'h06b;
-memory[13] <=  9'h073;
-memory[14] <=  9'h068;
-memory[15] <=  9'h063;
-memory[16] <=  9'h066;
-memory[17] <=  9'h069;
-memory[18] <=  9'h077;
-memory[19] <=  9'h068;
-memory[20] <=  9'h061;
-memory[21] <=  9'h074;
-memory[22] <=  9'h061;
-memory[23] <=  9'h06e;
-memory[24] <=  9'h061;
-memory[25] <=  9'h062;
-memory[26] <=  9'h061;
-memory[27] <=  9'h063;
-memory[28] <=  9'h061;
-memory[29] <=  9'h074;
-memory[30] <=  9'h061;
-memory[31] <=  9'h062;
-memory[32] <=  9'h061;
-memory[33] <=  9'h072;
-memory[34] <=  9'h063;
-memory[35] <=  9'h061;
-memory[36] <=  9'h068;
-memory[37] <=  9'h064;
-memory[38] <=  9'h075;
-memory[39] <=  9'h063;
-memory[40] <=  9'h074;
-memory[41] <=  9'h061;
-memory[42] <=  9'h064;
-memory[43] <=  9'h061;
-memory[44] <=  9'h061;
-memory[45] <=  9'h063;
-memory[46] <=  9'h061;
-memory[47] <=  9'h072;
-memory[48] <=  9'h063;
-memory[49] <=  9'h074;
-memory[50] <=  9'h072;
-memory[51] <=  9'h063;
-memory[52] <=  9'h061;
-memory[53] <=  9'h074;
-memory[54] <=  9'h072;
-memory[55] <=  9'h063;
-memory[56] <=  9'h061;
-memory[57] <=  9'h074;
-memory[58] <=  9'h063;
-memory[59] <=  9'h062;
-memory[60] <=  9'h061;
-memory[61] <=  9'h074;
-memory[62] <=  9'h062;
-memory[63] <=  9'h072;
-memory[64] <=  9'h063;
-memory[65] <=  9'h061;
-memory[66] <=  9'h074;
-memory[67] <=  9'h072;
-memory[68] <=  9'h06e;
-memory[69] <=  9'h062;
-memory[70] <=  9'h061;
-memory[71] <=  9'h063;
-memory[72] <=  9'h061;
-memory[73] <=  9'h074;
-memory[74] <=  9'h079;
-memory[75] <=  9'h073;
-memory[76] <=  9'h06e;
-memory[77] <=  9'h063;
-memory[78] <=  9'h074;
-memory[79] <=  9'h061;
-memory[80] <=  9'h06e;
-memory[81] <=  9'h062;
-memory[82] <=  9'h061;
-memory[83] <=  9'h063;
-memory[84] <=  9'h072;
-memory[85] <=  9'h06e;
-memory[86] <=  9'h074;
-memory[87] <=  9'h061;
-memory[88] <=  9'h062;
-memory[89] <=  9'h074;
-memory[90] <=  9'h06e;
-memory[91] <=  9'h061;
-memory[92] <=  9'h072;
-memory[93] <=  9'h062;
-memory[94] <=  9'h078;
-memory[95] <=  9'h074;
-memory[96] <=  9'h061;
-memory[97] <=  9'h072;
-memory[98] <=  9'h000;
-memory[99] <=  9'h000;
-memory[100] <=  9'h000;
-memory[101] <=  9'h000;
-memory[102] <=  9'h000;
-memory[103] <=  9'h000;
-memory[104] <=  9'h000;
-memory[105] <=  9'h000;
-memory[106] <=  9'h000;
-memory[107] <=  9'h000;
-memory[108] <=  9'h000;
-memory[109] <=  9'h000;
-memory[110] <=  9'h000;
-memory[111] <=  9'h000;
-memory[112] <=  9'h000;
-memory[113] <=  9'h000;
-memory[114] <=  9'h000;
-memory[115] <=  9'h000;
-memory[116] <=  9'h000;
-memory[117] <=  9'h000;
-memory[118] <=  9'h000;
-memory[119] <=  9'h000;
-memory[120] <=  9'h000;
-memory[121] <=  9'h000;
-memory[122] <=  9'h000;
-memory[123] <=  9'h000;
-memory[124] <=  9'h000;
-memory[125] <=  9'h000;
-memory[126] <=  9'h000;
-memory[127] <=  9'h000;
-memory[128] <=  9'h000;
-memory[129] <=  9'h000;
-memory[130] <=  9'h000;
-memory[131] <=  9'h000;
-memory[132] <=  9'h000;
-memory[133] <=  9'h000;
-memory[134] <=  9'h000;
-memory[135] <=  9'h000;
-memory[136] <=  9'h000;
-memory[137] <=  9'h000;
-memory[138] <=  9'h000;
-memory[139] <=  9'h000;
-memory[140] <=  9'h000;
-memory[141] <=  9'h000;
-memory[142] <=  9'h000;
-memory[143] <=  9'h000;
-memory[144] <=  9'h000;
-memory[145] <=  9'h000;
-memory[146] <=  9'h000;
-memory[147] <=  9'h000;
-memory[148] <=  9'h000;
-memory[149] <=  9'h000;
-memory[150] <=  9'h000;
-memory[151] <=  9'h000;
-memory[152] <=  9'h000;
-memory[153] <=  9'h000;
-memory[154] <=  9'h000;
-memory[155] <=  9'h000;
-memory[156] <=  9'h000;
-memory[157] <=  9'h000;
-memory[158] <=  9'h000;
-memory[159] <=  9'h000;
-memory[160] <=  9'h000;
-memory[161] <=  9'h000;
-memory[162] <=  9'h000;
-memory[163] <=  9'h000;
-memory[164] <=  9'h000;
-memory[165] <=  9'h000;
-memory[166] <=  9'h000;
-memory[167] <=  9'h000;
-memory[168] <=  9'h000;
-memory[169] <=  9'h000;
-memory[170] <=  9'h000;
-memory[171] <=  9'h000;
-memory[172] <=  9'h000;
-memory[173] <=  9'h000;
-memory[174] <=  9'h000;
-memory[175] <=  9'h000;
-memory[176] <=  9'h000;
-memory[177] <=  9'h000;
-memory[178] <=  9'h000;
-memory[179] <=  9'h000;
-memory[180] <=  9'h000;
-memory[181] <=  9'h000;
-memory[182] <=  9'h000;
-memory[183] <=  9'h000;
-memory[184] <=  9'h000;
-memory[185] <=  9'h000;
-memory[186] <=  9'h000;
-memory[187] <=  9'h000;
-memory[188] <=  9'h000;
-memory[189] <=  9'h000;
-memory[190] <=  9'h000;
-memory[191] <=  9'h000;
-memory[192] <=  9'h000;
-memory[193] <=  9'h000;
-memory[194] <=  9'h000;
-memory[195] <=  9'h000;
-memory[196] <=  9'h000;
-memory[197] <=  9'h000;
-memory[198] <=  9'h000;
-memory[199] <=  9'h000;
-memory[200] <=  9'h000;
-memory[201] <=  9'h000;
-memory[202] <=  9'h000;
-memory[203] <=  9'h000;
-memory[204] <=  9'h000;
-memory[205] <=  9'h000;
-memory[206] <=  9'h000;
-memory[207] <=  9'h000;
-memory[208] <=  9'h000;
-memory[209] <=  9'h000;
-memory[210] <=  9'h000;
-memory[211] <=  9'h000;
-memory[212] <=  9'h000;
-memory[213] <=  9'h000;
-memory[214] <=  9'h000;
-memory[215] <=  9'h000;
-memory[216] <=  9'h000;
-memory[217] <=  9'h000;
-memory[218] <=  9'h000;
-memory[219] <=  9'h000;
-memory[220] <=  9'h000;
-memory[221] <=  9'h000;
-memory[222] <=  9'h000;
-memory[223] <=  9'h000;
-memory[224] <=  9'h000;
-memory[225] <=  9'h000;
-memory[226] <=  9'h000;
-memory[227] <=  9'h000;
-memory[228] <=  9'h000;
-memory[229] <=  9'h000;
-memory[230] <=  9'h000;
-memory[231] <=  9'h000;
-memory[232] <=  9'h000;
-memory[233] <=  9'h000;
-memory[234] <=  9'h000;
-memory[235] <=  9'h000;
-memory[236] <=  9'h000;
-memory[237] <=  9'h000;
-memory[238] <=  9'h000;
-memory[239] <=  9'h000;
-memory[240] <=  9'h000;
-memory[241] <=  9'h000;
-memory[242] <=  9'h000;
-memory[243] <=  9'h000;
-memory[244] <=  9'h000;
-memory[245] <=  9'h000;
-memory[246] <=  9'h000;
-memory[247] <=  9'h000;
-memory[248] <=  9'h000;
-memory[249] <=  9'h000;
-memory[250] <=  9'h000;
-memory[251] <=  9'h000;
-memory[252] <=  9'h000;
-memory[253] <=  9'h000;
-memory[254] <=  9'h000;
-memory[255] <=  9'h0AA;
+
+
+memory[0] <=  8'h62;
+memory[1] <=  8'h61;
+memory[2] <=  8'h72;
+memory[3] <=  8'h74;
+memory[4] <=  8'h74;
+memory[5] <=  8'h62;
+memory[6] <=  8'h61;
+memory[7] <=  8'h72;
+memory[8] <=  8'h74;
+memory[9] <=  8'h78;
+memory[10] <=  8'h61;
+memory[11] <=  8'h74;
+memory[12] <=  8'h6b;
+memory[13] <=  8'h73;
+memory[14] <=  8'h68;
+memory[15] <=  8'h63;
+memory[16] <=  8'h66;
+memory[17] <=  8'h69;
+memory[18] <=  8'h77;
+memory[19] <=  8'h68;
+memory[20] <=  8'h61;
+memory[21] <=  8'h74;
+memory[22] <=  8'h61;
+memory[23] <=  8'h6e;
+memory[24] <=  8'h61;
+memory[25] <=  8'h62;
+memory[26] <=  8'h61;
+memory[27] <=  8'h63;
+memory[28] <=  8'h61;
+memory[29] <=  8'h74;
+memory[30] <=  8'h61;
+memory[31] <=  8'h62;
+memory[32] <=  8'h61;
+memory[33] <=  8'h72;
+memory[34] <=  8'h63;
+memory[35] <=  8'h61;
+memory[36] <=  8'h68;
+memory[37] <=  8'h64;
+memory[38] <=  8'h75;
+memory[39] <=  8'h63;
+memory[40] <=  8'h74;
+memory[41] <=  8'h61;
+memory[42] <=  8'h64;
+memory[43] <=  8'h61;
+memory[44] <=  8'h61;
+memory[45] <=  8'h63;
+memory[46] <=  8'h61;
+memory[47] <=  8'h72;
+memory[48] <=  8'h63;
+memory[49] <=  8'h74;
+memory[50] <=  8'h72;
+memory[51] <=  8'h63;
+memory[52] <=  8'h61;
+memory[53] <=  8'h74;
+memory[54] <=  8'h72;
+memory[55] <=  8'h63;
+memory[56] <=  8'h61;
+memory[57] <=  8'h74;
+memory[58] <=  8'h63;
+memory[59] <=  8'h62;
+memory[60] <=  8'h61;
+memory[61] <=  8'h74;
+memory[62] <=  8'h62;
+memory[63] <=  8'h72;
+memory[64] <=  8'h63;
+memory[65] <=  8'h61;
+memory[66] <=  8'h72;
+memory[67] <=  8'h62;
+memory[68] <=  8'h78;
+memory[69] <=  8'h74;
+memory[70] <=  8'h61;
+memory[71] <=  8'h72;
+memory[72] <=  8'h64;
+memory[73] <=  8'h66;
+memory[74] <=  8'h73;
+memory[75] <=  8'h67;
+memory[76] <=  8'h76;
+memory[77] <=  8'h68;
+memory[78] <=  8'h62;
+memory[79] <=  8'h6b;
+memory[80] <=  8'h6a;
+memory[81] <=  8'h6e;
+memory[82] <=  8'h6d;
+memory[83] <=  8'h62;
+memory[84] <=  8'h76;
+memory[85] <=  8'h78;
+memory[86] <=  8'h63;
+memory[87] <=  8'h73;
+memory[88] <=  8'h66;
+memory[89] <=  8'h72;
+memory[90] <=  8'h74;
+memory[91] <=  8'h79;
+memory[92] <=  8'h75;
+memory[93] <=  8'h6a;
+memory[94] <=  8'h6e;
+memory[95] <=  8'h62;
+memory[96] <=  8'h76;
+memory[97] <=  8'h63;
+memory[98] <=  8'h64;
+memory[99] <=  8'h74;
+memory[100] <=  8'h79;
+memory[101] <=  8'h75;
+memory[102] <=  8'h69;
+memory[103] <=  8'h6b;
+memory[104] <=  8'h6d;
+memory[105] <=  8'h6e;
+memory[106] <=  8'h62;
+memory[107] <=  8'h76;
+memory[108] <=  8'h63;
+memory[109] <=  8'h78;
+memory[110] <=  8'h73;
+memory[111] <=  8'h64;
+memory[112] <=  8'h72;
+memory[113] <=  8'h74;
+memory[114] <=  8'h79;
+memory[115] <=  8'h75;
+memory[116] <=  8'h69;
+memory[117] <=  8'h6b;
+memory[118] <=  8'h6d;
+memory[119] <=  8'h6e;
+memory[120] <=  8'h62;
+memory[121] <=  8'h76;
+memory[122] <=  8'h63;
+memory[123] <=  8'h73;
+memory[124] <=  8'h77;
+memory[125] <=  8'h33;
+memory[126] <=  8'h34;
+memory[127] <=  8'h35;
+memory[128] <=  8'h36;
+memory[129] <=  8'h37;
+memory[130] <=  8'h38;
+memory[131] <=  8'h69;
+memory[132] <=  8'h6b;
+memory[133] <=  8'h6d;
+memory[134] <=  8'h6e;
+memory[135] <=  8'h62;
+memory[136] <=  8'h76;
+memory[137] <=  8'h63;
+memory[138] <=  8'h64;
+memory[139] <=  8'h65;
+memory[140] <=  8'h72;
+memory[141] <=  8'h36;
+memory[142] <=  8'h37;
+memory[143] <=  8'h38;
+memory[144] <=  8'h69;
+memory[145] <=  8'h6f;
+memory[146] <=  8'h6b;
+memory[147] <=  8'h6a;
+memory[148] <=  8'h6e;
+memory[149] <=  8'h62;
+memory[150] <=  8'h76;
+memory[151] <=  8'h63;
+memory[152] <=  8'h64;
+memory[153] <=  8'h72;
+memory[154] <=  8'h74;
+memory[155] <=  8'h79;
+memory[156] <=  8'h75;
+memory[157] <=  8'h73;
+memory[158] <=  8'h6a;
+memory[159] <=  8'h63;
+memory[160] <=  8'h6e;
+memory[161] <=  8'h62;
+memory[162] <=  8'h64;
+memory[163] <=  8'h66;
+memory[164] <=  8'h73;
+memory[165] <=  8'h74;
+memory[166] <=  8'h79;
+memory[167] <=  8'h75;
+memory[168] <=  8'h61;
+memory[169] <=  8'h69;
+memory[170] <=  8'h6b;
+memory[171] <=  8'h78;
+memory[172] <=  8'h6d;
+memory[173] <=  8'h6e;
+memory[174] <=  8'h73;
+memory[175] <=  8'h6a;
+memory[176] <=  8'h6f;
+memory[177] <=  8'h64;
+memory[178] <=  8'h6c;
+memory[179] <=  8'h63;
+memory[180] <=  8'h78;
+memory[181] <=  8'h2c;
+memory[182] <=  8'h6d;
+memory[183] <=  8'h73;
+memory[184] <=  8'h6b;
+memory[185] <=  8'h64;
+memory[186] <=  8'h6c;
+memory[187] <=  8'h70;
+memory[188] <=  8'h5b;
+memory[189] <=  8'h3b;
+memory[190] <=  8'h73;
+memory[191] <=  8'h6c;
+memory[192] <=  8'h64;
+memory[193] <=  8'h70;
+memory[194] <=  8'h76;
+memory[195] <=  8'h63;
+memory[196] <=  8'h5b;
+memory[197] <=  8'h78;
+memory[198] <=  8'h76;
+memory[199] <=  8'h63;
+memory[200] <=  8'h5b;
+memory[201] <=  8'h78;
+memory[202] <=  8'h70;
+memory[203] <=  8'h6f;
+memory[204] <=  8'h20;
+memory[205] <=  8'h62;
+memory[206] <=  8'h61;
+memory[207] <=  8'h72;
+memory[208] <=  8'h74;
+memory[209] <=  8'h74;
+memory[210] <=  8'h62;
+memory[211] <=  8'h61;
+memory[212] <=  8'h72;
+memory[213] <=  8'h74;
+memory[214] <=  8'h78;
+memory[215] <=  8'h61;
+memory[216] <=  8'h74;
+memory[217] <=  8'h6b;
+memory[218] <=  8'h73;
+memory[219] <=  8'h68;
+memory[220] <=  8'h63;
+memory[221] <=  8'h66;
+memory[222] <=  8'h69;
+memory[223] <=  8'h77;
+memory[224] <=  8'h68;
+memory[225] <=  8'h61;
+memory[226] <=  8'h69;
+memory[227] <=  8'h6a;
+memory[228] <=  8'h78;
+memory[229] <=  8'h5d;
+memory[230] <=  8'h65;
+memory[231] <=  8'h6b;
+memory[232] <=  8'h6f;
+memory[233] <=  8'h39;
+memory[234] <=  8'h64;
+memory[235] <=  8'h75;
+memory[236] <=  8'h38;
+memory[237] <=  8'h79;
+memory[238] <=  8'h20;
+memory[239] <=  8'h37;
+memory[240] <=  8'h63;
+memory[241] <=  8'h67;
+memory[242] <=  8'h78;
+memory[243] <=  8'h63;
+memory[244] <=  8'h75;
+memory[245] <=  8'h68;
+memory[246] <=  8'h69;
+memory[247] <=  8'h6a;
+memory[248] <=  8'h77;
+memory[249] <=  8'h69;
+memory[250] <=  8'h64;
+memory[251] <=  8'h66;
+memory[252] <=  8'h68;
+memory[253] <=  8'h75;
+memory[254] <=  8'h76;
+memory[255] <=  8'h64;
+
+
+
 read_data_buff1 <= 9'h000;
 read_data_buff2 <= 9'h000;
 read_data <=   9'h000;

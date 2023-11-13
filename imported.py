@@ -16,7 +16,7 @@ try:
     
     while True:
         # Read data from the serial port
-        data = ser.readline().decode('utf-8').strip()
+        data = ser.readline()#.decode('utf-8').strip()
         
         # Print the received data
         print(f"Received data: {data}, with length: {len(data)}")

@@ -2,7 +2,9 @@ import json
 
 file_path_graph = "graph_dict.json"
 BRAM_size = 256
-str_var = "  This text is example data that was stored on BRAM: Hello! This is from the FPGA                  " #" emily is amazing and pretty GF and I think shes so cool and smart and hard working"
+#str_var = "  This text is example data that was stored on BRAM: Hello! This is from the FPGA                  " #" emily is amazing and pretty GF and I think shes so cool and smart and hard working"
+str_var = "barttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcarbxtardfsgvhbkjnmbvxcsfrtyujnbvcdtyuikmnbvcxsdrtyuikmnbvcsw345678ikmnbvcder678iokjnbvcdrtyusjcnbdfstyuaikxmnsjodlcx,mskdlp[;sldpvc[xvc[xpo barttbartxatkshcfiwhaijx]eko9du8y 7cgxcuhijwidfhuvdbfjnkje8f7gyvchij3egyrdbnczjo xjichb nmcslkjihvu bwjnekjhfwvdbxnkjc idhugybhejrkjodgiuigvyugxhc   xv cxgycuhjkalxvpoijihjbwenafmdkmvlcodiuhsfebndsck xjxcsdfkdnmdsckxlofjiabn xkm ocvsdifheqjwben mdslvkcx oxicjvdfeqn dmslcxk oxcvjdbqwenmdls,vcx coivhsdbqwendksvoc viuihcxiovsdadnwqklsvnb dfjkqdwenb dsvhdaqwjend acbhdawqn bsvagvhgasjkcxvnsd fbdasvgcyzxyu ijdfkadcxh gahudsijakcbarshdfgshdfhdjhbgcafsygkudhbwvgafdtufygiuhljbkhvgcfxdtuyiuhljkgjcfhdgrytfuyihlbmvncfhdtugyihujlbmvncfhgyhujn,bnmvncfhtyiuljbmvncftuyihkbvcfgtuyiuhjkbvcftuyiujknbvgftyuuijkhbjghfytyiudjkhczghtuyiasujkbnavcfhuasyduijakbcxhgyuzcasiuoijalcxbc nvcadsgyhuajkxb nvcasghujlkcx jkhasvdn bnmkwdowiouihbnkwiouqiygjdavbnkopdviouiHBkdnlqkmjpiohefugisabdkjkljisoqhwgiyjdvbnasflkdjhcgjvsdbbarbbsbgsfgahfshafsfhaidugdwbabrbabbtbbbbbbbbabbrtbbabrbtbbbcartsbarttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtarbarttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtarbarttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtar]]efwe]egsgfbarttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtarbarttbartxatkshcfiwhatanabacatabarcahductadaacarctrcatrcatcbatbrcatrnbacatysnctanbacrntabtnarbxtardfsgvhbkjnmbvxcsfrtyujnbvcdtyuikmnbvcxsdrtyuikmnbvcsw345678ikmnbvcder678iokjnbvcdrtyusjcnbdfstyuaikxmnsjodlcxbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacarbartxatkshcfiwhatanabacatabarcahductadaacar"
+
 with open(file_path_graph, 'r') as json_file:
     loaded_dict = json.load(json_file)
 print(f"Dictionary has been loadrd from {file_path_graph} from JSON format.\n This graph imlpements regex: {loaded_dict['reg_exp']} with {loaded_dict['STE_NUM']} encoded STES and {loaded_dict['STE_BITS']} BITS")
@@ -11,6 +13,9 @@ print(f"string encoded: {str_var} \n which is {len(str_var)} chars long\n Bram s
 file_path = "tb_str"
 file_path_tb_v = file_path + ".txt"
 file_path_coe  = file_path + ".coe"
+file_path_coe_9  = file_path + "_9bit.coe"
+
+file_path_pam = file_path + f"_BRAM_PAR_{str(BRAM_size)}.txt"
 # Open the file in write mode ('w' mode) and create it if it doesn't exist
 with open(file_path_tb_v, 'w') as file:
     # Write each line to the file one by one
@@ -58,6 +63,77 @@ with open(file_path_coe, 'w') as file:
             num_print +=1     
 
 print(f"Lines have been written to '{file_path_coe}' with {num_print} lines of data into the bram .")
+
+
+with open(file_path_coe_9, 'w') as file:
+    # Write each line to the file one by one#file.write("//Automated Tb STARTS Here\n")
+    file.write("memory_initialization_radix=16;\n")
+    file.write("memory_initialization_vector=  \n")
+    num_print = 0
+    break_flag = 1 
+    file_len  = len(str_var)
+    rangg_num = file_len-1
+        
+    for char_i in range(rangg_num):
+        if  char_i == 0: #(BRAM_size-1):
+            str_num = str(hex(ord(str(str_var[char_i]))))[2:]
+            file.write(f"1{str_num},\n")
+            num_print +=1 
+        elif  char_i != (BRAM_size-1):
+            str_num = str(hex(ord(str(str_var[char_i]))))[2:]
+            file.write(f"0{str_num},\n")
+            num_print +=1 
+        else: 
+            str_num = str(hex(ord(str(str_var[char_i]))))[2:]
+            file.write(f"0{str_num};")
+            break_flag = 0 
+            break
+    if break_flag == 1:        
+        if file_len == BRAM_size:
+            str_num = str(hex(ord(str(str_var[rangg_num]))))[2:]
+            file.write(f"0{str_num};")
+            num_print +=1 
+        else:
+            str_num = str(hex(ord(str(str_var[rangg_num]))))[2:]
+            file.write(f"0{str_num},\n")
+            num_print +=1 
+            for i in range(BRAM_size- file_len-1):
+                file.write(f"000,\n")
+                num_print +=1 
+            file.write(f"000;")
+            num_print +=1     
+
+print(f"Lines have been written to '{file_path_coe}' with {num_print} lines of data into the bram .")
+
+
+
+
+with open(file_path_pam, 'w') as file:
+    # Write each line to the file one by one#file.write("//Automated Tb STARTS Here\n")
+   #file.write("memory_initialization_radix=16;\n")
+   #file.write("memory_initialization_vector=  \n")
+    num_print = 0
+    break_flag = 1 
+    file_len  = len(str_var)
+    rangg_num = file_len-1
+    
+    
+    
+        
+    for char_i in range(BRAM_size):
+        if  char_i == 0 and len(str_var) > 0:
+            str_num = str(hex(ord(str(str_var[char_i]))))[2:]
+            file.write(f"memory[{char_i}] <=  8'h{str_num};\n")
+            num_print +=1 
+        elif char_i < len(str_var):
+            str_num = str(hex(ord(str(str_var[char_i]))))[2:]
+            file.write(f"memory[{char_i}] <=  8'h{str_num};\n")
+            num_print +=1 
+        else:
+            file.write(f"memory[{char_i}] <=  8'h00;\n")
+
+print(f"Lines have been written to '{file_path_pam}' with {num_print} lines of data into the bram .")
+
 
 
 #file.write("//Automated Tb ENDS Here\n")
@@ -196,7 +272,7 @@ for char in str_var:
     i+=1
     match_i = match(start_vec,match_i,sense(char,loaded_dict,STE_BITS),loaded_dict,STE_BITS)
 
-
+print(len(str_var))
 #match_1 = match(start_vec,match_0,sense("b",loaded_dict,STE_BITS),loaded_dict,STE_BITS)
 #match_2 = match(start_vec,match_1,sense("a",loaded_dict,STE_BITS),loaded_dict,STE_BITS)
 #match_3 = match(start_vec,match_1,sense("r",loaded_dict,STE_BITS),loaded_dict,STE_BITS)

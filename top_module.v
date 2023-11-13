@@ -47,24 +47,19 @@ wire [7:0] count_b1_read, count_b2_read, word_report_read;
 wire [7:0] data_uart;
 wire [7:0] bram_result;
 
-
-
-
-
-
-assign computation_reset_button = BTN[3];
-assign LED[0] =  stat_wr;
-assign LED[1] =  pulse_started_sig;
-assign LED[2] =  uart_reset_button;
-assign LED[3] =  computation_reset_button;
-assign LED[4] =  UART_RXD_OUT;
-assign LED[5] =  txd;
-assign LED[6] =  tx_busy;
-assign LED[7] =  bud9600_gen;
+//assign computation_reset_button = BTN[3];
+assign LED[0] =  write_address[0];
+assign LED[1] =  write_address[1];
+assign LED[2] =  write_address[2];
+assign LED[3] =  write_address[3];
+assign LED[4] =  write_address[4];
+assign LED[5] =  write_address[5];
+assign LED[6] =  computation_reset_button;
+assign LED[7] =  uart_reset_button;
 assign UART_RXD_OUT = txd;
 assign CLK_FPGA = CLK;
 assign bram_being_used = signal_enable_uart | reg_enable_comp;
-assign uart_reset_button        = BTN[4];
+//assign uart_reset_button        = BTN[4];
 parameter address_range = 10'h3FF;
 assign data_address_bram_read = signal_data_address_uart_incr[10:3];
 assign global_rst = 1'b0;
@@ -72,6 +67,25 @@ assign input_word_wire = read_data_comp_in[7:0];
 assign clk_count = {24'b0,data_address_comp};
 assign adress_bram_write = write_address[7:0];
 assign sel_mux =      signal_data_address_uart_incr[2:0];
+
+
+//                     6 OR 5208
+bud9600_gen #(.CYCLE_X(2)) oHz ( CLK,  bud9600_gen); 
+debounce debounce_inst_comp (
+   .clk_in(CLK_FPGA),
+   .rst_in(1'b0),
+   .bouncey_in(BTN[3]),
+   .wire_clean_out(computation_reset_button)
+);
+debounce debounce_inst_uart (
+   .clk_in(CLK_FPGA),
+   .rst_in(1'b0),
+   .bouncey_in(BTN[4]),
+   .wire_clean_out(uart_reset_button)
+);
+//assign uart_reset_button        = BTN[4];
+//assign computation_reset_button = BTN[3];
+
 
 BRAM BRAM_read_comp (
     .clk(CLK),
@@ -81,6 +95,10 @@ BRAM BRAM_read_comp (
     .enable(reg_enable_comp),
     .read_data(read_data_comp_in)
 );
+
+
+
+
 report_funct u_report_funct (
     .clk(CLK),
     .reset(computation_reset_button),
@@ -109,12 +127,10 @@ COMP_stream_contoller #(
 
 
 
-parameter buffer_byte_01 = 8'h55;
-parameter buffer_byte_02 = 8'h5A;
-parameter buffer_byte_03 = 8'h5F;
-parameter buffer_byte_04 = 8'h6F;
-//                     6 OR 5208
-bud9600_gen #(.CYCLE_X(5208)) oHz ( CLK,  bud9600_gen); 
+parameter buffer_byte_01 = 8'h5B;
+parameter buffer_byte_02 = 8'h5C;
+parameter buffer_byte_03 = 8'h5D;
+parameter buffer_byte_04 = 8'h0A;
 
 mux_16_options #(
 .WIDTH(8)
@@ -123,15 +139,16 @@ mux_16_options #(
 .i0(buffer_byte_01), .i1(count_b1_read[7:0]),
 .i2(buffer_byte_02), .i3(count_b2_read[7:0]),
 .i4(buffer_byte_03), .i5(word_report_read[7:0]),  
-.i6(buffer_byte_04), .i7(word_report_read[7:0]),
+.i6(8'b00000000), .i7(buffer_byte_04),
 .i8(8'b00000000),   .i9(8'b00000000), .i10(8'b00000000), .i11(8'b00000000),
 .i12(8'b00000000), .i13(8'b00000000), .i14(8'b00000000), .i15(8'b00000000),
 .y(data_uart)
 );
-uart_stream_contrl uut (
+uart_stream_contrl uart_ctrl (
 .bud9600_gen(bud9600_gen),
 .uart_reset_button(uart_reset_button),
 .tx_busy(tx_busy),
+.max_write_address(write_address),
 .signal_data_address_uart_incr(signal_data_address_uart_incr),
 .signal_enable_uart(signal_enable_uart),
 .signal_start_enable_uart(signal_start_enable_uart)
@@ -148,7 +165,6 @@ mux_8_options #(.WIDTH(8)) address_mux (
     .i7(8'h00),
     .y(Bram_address_write_read)
 );
-
 
 uart_state_machine uat_stmch(
     .clk(bud9600_gen),

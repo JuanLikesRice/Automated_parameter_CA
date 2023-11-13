@@ -34,31 +34,67 @@ module top_module();
 // Testbench stimulus
 
     initial begin
-        $display("Simulation started");
-        $dumpfile("testbench.vcd");
-        $dumpvars(0, top_module);
-        clk = 0;
-        SW_test  = 8'b0;
-        BTN_test = 8'b0;
-        #100
+       $display("Simulation started");
+       $dumpfile("testbench.vcd");
+       $dumpvars(0, top_module);
+       clk = 0;
+       SW_test  = 8'b0;
+       BTN_test = 8'b0;
+       #9000
+       BTN_test[3] = 1'b0; #2 BTN_test[3] = 1'b1;       #3; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #5 BTN_test[3] = 1'b1;       #5; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #6 BTN_test[3] = 1'b1;       #37; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #2 BTN_test[3] = 1'b1;       #9; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #32 BTN_test[3] = 1'b1;       #3; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #1 BTN_test[3] = 1'b1;       #1; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #46 BTN_test[3] = 1'b1;       #5; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #11 BTN_test[3] = 1'b1;       #7; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b1;
+       #4000
+       BTN_test[3] = 1'b0; #2 BTN_test[3] = 1'b1;       #3; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #5 BTN_test[3] = 1'b1;       #5; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #6 BTN_test[3] = 1'b1;       #37; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #2 BTN_test[3] = 1'b1;       #9; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #32 BTN_test[3] = 1'b1;       #3; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #1 BTN_test[3] = 1'b1;       #1; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #46 BTN_test[3] = 1'b1;       #5; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0; #11 BTN_test[3] = 1'b1;       #7; BTN_test[3] = 1'b0;
+       BTN_test[3] = 1'b0;
+       #70
+       BTN_test[3] = 1'b0;
+       #4000
+       BTN_test[3] = 1'b0;
+       #2000
+       BTN_test[4] = 1'b0;
+       #4000
+       BTN_test[4] = 1'b0;
+       #20000
+       /*DEBOUSCING*/
 
-        //BTN_test[3] = 1'b1;
-        #4000
-        BTN_test[3] = 1'b0;
-        #70
-        BTN_test[3] = 1'b1;
-        #4000
-        BTN_test[3] = 1'b0;
-        #2000
+       BTN_test[4] = 1'b1;
+       #3
 
+       BTN_test[4] = 1'b0; #2 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #3 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #4 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #3 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #22 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #5 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #6 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #10 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #2 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
         BTN_test[4] = 1'b1;
         #4000
         BTN_test[4] = 1'b0;
-        #8000
-
-        BTN_test[4] = 1'b1;
-        #4000
-        BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #2 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #3 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #4 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #3 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #22 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #5 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #6 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #10 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
+       BTN_test[4] = 1'b0; #2 BTN_test[4] = 1'b1;       #3; BTN_test[4] = 1'b0;
 
         #35_0000/*
         BTN_test[4] = 1'b1;
