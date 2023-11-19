@@ -5,7 +5,9 @@ import ast
 
 
 #Varible that should be changed
+#reg_exp = "word1|word4|qtpie|qtwor|word|9|a*b"
 reg_exp = "bat|bar|bart|ar|at|art|car|cat|cart"
+
 Input_word_BITS = 8
 file_path = "module_AUTOMATED.v"
 
@@ -114,7 +116,7 @@ with open(file_path, 'w') as file:
   
     start_vector_str = f"{N_STE_BITS}'b"+ start_vect
     end_vector_str = f"{N_STE_BITS}'b"+ end_vect
-    file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) \n) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0)\n);\n\n")    
+    file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) \n) CA_p_v1 ( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0),\n .word_report_bit_out(word_report_bit_out)\n);\n\n")    
     file.write(f"*/ \n\n\n\n\n")
     
     #MMODULE UBSTANTATION BEGIN
@@ -128,7 +130,11 @@ with open(file_path, 'w') as file:
     file.write("\nendmodule\n")
     
     
-    file.write(f"module In{Input_word_BITS}BitTo{Input_word_BITS_val}OneHot ( \n \n    input wire [{Input_word_BITS-1}:0] input_data,\n    output wire [{Input_word_BITS_val-1}:0] one_hot_encoding\n);\n    reg [{Input_word_BITS_val-1}:0] one_hot_encoding_reg;\n    integer i;\n    always @(*) begin\n        one_hot_encoding_reg = {Input_word_BITS_val}'b0;\n        for (i = 0; i < {Input_word_BITS_val}; i = i + 1) begin\n            if (input_data == i)\n                one_hot_encoding_reg[i] = 1'b1;\n        end\n    end\n    assign one_hot_encoding = one_hot_encoding_reg;\nendmodule \n\n\n\n" )
+    file.write(f"module In{Input_word_BITS}BitTo{Input_word_BITS_val}OneHot ( \n \n    input wire [{Input_word_BITS-1}:0] input_data,\n    output wire [{Input_word_BITS_val-1}:0] one_hot_encoding\n);\n    reg [{Input_word_BITS_val-1}:0] one_hot_encoding_reg;\n \n\n\n")
+    #initial_cond = "initial begin \n    one_hot_encoding_reg <=  {Input_word_BITS_val}'b0; \n end   \n\n"
+    
+    #file.write(initial_cond)    
+    file.write(f"  integer i;\n    always @(*) begin\n        one_hot_encoding_reg = {Input_word_BITS_val}'b0;\n        for (i = 0; i < {Input_word_BITS_val}; i = i + 1) begin\n            if (input_data == i)\n                one_hot_encoding_reg[i] = 1'b1;\n        end\n    end\n    assign one_hot_encoding = one_hot_encoding_reg;\nendmodule \n\n\n\n" )
 
     file.write(f"\n module MatchConstant_AUTOMATED ( \n input wire [{Input_word_BITS_val-1}:0] input_number, \n    output wire output_match \n ); \n    // Define the constant value to match against \n    parameter [{Input_word_BITS_val-1}:0] CONSTANT_VALUE = {zero_Input_WORD}; // Change this to your desired constant value \n    wire [{Input_word_BITS_val-1}:0] bitwise_and_result; \n    assign bitwise_and_result = input_number & CONSTANT_VALUE; // Perform bitwise AND between number1 and number2 \n    assign output_match =  |(bitwise_and_result);//(input_number == CONSTANT_VALUE) ? 1'b1 : 1'b0; \n  endmodule \n \n\n ")
 
@@ -161,6 +167,11 @@ with open(file_path, 'w') as file:
         file.write(f"MatchConstant_AUTOMATED #(ActivationVector_STE{i+1}) match_STE{i+1} ( \n .input_number(STE_encoding), \n .output_match(output_match_STE{i+1}) \n ); \n\n\n")
     
     file.write(f"reg [{N_STE_BITS-1}:0] STE_MATCH_VECTOR;\n")    
+    
+    
+    initial_cond = f"initial begin \n    STE_MATCH_VECTOR <=  {N_STE_BITS}'b0; \n end   \n\n"
+    
+    file.write(initial_cond)  
 
     file.write("\n  always @(posedge clk) begin \n")
     
@@ -196,7 +207,10 @@ with open(file_path, 'w') as file:
         starting_string = starting_string + f"result_STE{i+1}|"
     starting_string = starting_string + f"result_STE{N_STE_BITS}; \n"
     file.write(starting_string)
-            
+    
+    initial_cond = "initial begin \n   out_bits <=  start_vector; \n end   \n\n"
+    
+    file.write(initial_cond)        
             
     file.write(f"\nalways @(posedge clk) begin\n    if (rst == 1'b1) begin //Not active  \n        out_bits <=  start_vector;\n    end\n    if (AND_sig == {zero_STE_BITS}) begin  \n        out_bits <=  start_vector;     \n    end else begin \n        out_bits <= result_matrix;\n    end\n  end\n  assign data_out =  out_bits;\n  assign report_bit = |(end_vector & AND_sig); \nendmodule\n\n\n")
     file.write("\n\n\n\n")
@@ -210,7 +224,7 @@ with open(file_path, 'w') as file:
     file.write(f"    parameter        STE{N_STE_BITS}_ACTIVATES = {zero_STE_BITS} \n")
     
      
-    file.write(f")\n(    input wire clk,\n    input wire rst,\n    input wire  [{Input_word_BITS-1}:0] input_word,\n    output wire rpt_bt,\n    output wire [{N_STE_BITS-1}:0] Activated_vector_t0 \n);\n\n   wire [{N_STE_BITS-1}:0] AW_vector_t0;\n")
+    file.write(f")\n(    input wire clk,\n    input wire rst,\n    input wire  [{Input_word_BITS-1}:0] input_word,\n  output wire  [{Input_word_BITS-1}:0] word_report_bit_out,\n   output wire rpt_bt,\n    output wire [{N_STE_BITS-1}:0] Activated_vector_t0 \n);\n\n   wire [{N_STE_BITS-1}:0] AW_vector_t0;\n")
     file.write(f"\n  STE_MATCH_AUTOMATED_{N_STE_BITS}bit_vector_{Input_word_BITS}bit_word  #(\n")
     for i in range(N_STE_BITS-1):
         file.write(f"    .ActivationVector_STE{i+1}(ActivationVector_STE{i+1}), \n")
@@ -225,9 +239,13 @@ with open(file_path, 'w') as file:
         file.write(f"     .STE{i+1}_ACTIVATES(STE{i+1}_ACTIVATES), \n")
     file.write(     f"     .STE{N_STE_BITS}_ACTIVATES(STE{N_STE_BITS}_ACTIVATES) \n")
 
-    file.write(f") STE_local_match (\n\n  .clk(clk),                   // Clock input\n  .rst(rst),               //reset signal      \n  .local_ste_sw(AW_vector_t0),                // n-bit STE input\n  .active_ste_sw(Activated_vector_t0),                // n-bit STE input;\n  .data_out(Activated_vector_t0),              // Match vector output\n  .report_bit(rpt_bt)             // Match vector output\n);\n \n endmodule \n")
+    file.write(f") STE_local_match (\n\n  .clk(clk),                   // Clock input\n  .rst(rst),               //reset signal      \n  .local_ste_sw(AW_vector_t0),                // n-bit STE input\n  .active_ste_sw(Activated_vector_t0),                // n-bit STE input;\n  .data_out(Activated_vector_t0),              // Match vector output\n  .report_bit(rpt_bt)             // Match vector output\n);\n \n \n")
     
-
+    file.write(f"\n\n reg  [{Input_word_BITS-1}:0] word_report_bit;\n")
+    file.write(f"initial begin \n word_report_bit <= {Input_word_BITS}'b0; \n end\n")
+    file.write(f"always @(posedge clk) begin  \n  word_report_bit <= input_word;\nend\nassign word_report_bit_out = word_report_bit;\n")
+    
+    file.write(f"\nendmodule")
 graph_dict["STE_NUM"]         = len(data)
 graph_dict["STE_BITS"]         = N_STE_BITS
 

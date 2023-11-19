@@ -21,13 +21,11 @@ wire start_enable;
 wire bud9600_gen;
 wire pulse2, pulse_start;
 wire write_enable_to_report;
-wire [7:0]  data_address_bram_read;
 wire [2:0] sel_mux;
 
 wire CLK_FPGA;
 wire reg_enable_comp; 
 
-wire [7:0] data_address_comp;
 wire [7:0] read_data_comp_in;
 wire rpt_bt;
 reg [7:0] input_word;
@@ -35,17 +33,18 @@ wire [31:0] Activated_vector_t0, Activated_vector_t1;
 wire [31:0] clk_count, write_address;
 wire [7:0] input_word_wire, count_b1, count_b2, count_b3, count_b4, word_report;
 wire AND_sig_r;
-wire [7:0] out_data, adress_bram_write;
+wire [7:0] out_data;
 wire global_rst;
 wire uart_reset_button, computation_reset_button;
 wire tx_busy; 
 wire pulse_started_sig, signal_enable_uart, signal_start_enable_uart;
 wire [31:0] signal_data_address_uart_incr;
-wire [7:0] Bram_address_write_read, Bram_address_read, Bram_address_write; 
+
 wire bram_being_used;
-wire [7:0] count_b1_read, count_b2_read, word_report_read;
+wire [7:0] count_b1_read, count_b2_read, count_b3_read, word_report_read;
 wire [7:0] data_uart;
 wire [7:0] bram_result;
+wire [7:0] word_report_bit_out;
 
 //assign computation_reset_button = BTN[3];
 assign LED[0] =  write_address[0];
@@ -61,16 +60,36 @@ assign CLK_FPGA = CLK;
 assign bram_being_used = signal_enable_uart | reg_enable_comp;
 //assign uart_reset_button        = BTN[4];
 parameter address_range = 10'h3FF;
-assign data_address_bram_read = signal_data_address_uart_incr[10:3];
 assign global_rst = 1'b0;
 assign input_word_wire = read_data_comp_in[7:0];
-assign clk_count = {24'b0,data_address_comp};
-assign adress_bram_write = write_address[7:0];
+
 assign sel_mux =      signal_data_address_uart_incr[2:0];
 
 
+//Bram mem size
+wire [15:0] data_address_comp;
+assign data_address_bram_read = signal_data_address_uart_incr[18:3];
+assign clk_count = {16'b0,data_address_comp};
+assign adress_bram_write = write_address[15:0];
+wire [15:0]  data_address_bram_read;
+wire [15:0] adress_bram_write;
+wire [15:0] Bram_address_write_read, Bram_address_read, Bram_address_write; 
+
+mux_8_options #(.WIDTH(16)) address_mux (
+    .sel({1'b0,reg_enable_comp,signal_enable_uart}),
+    .i0(16'h00),
+    .i1(data_address_bram_read), //01
+    .i2(     adress_bram_write), //10 
+    .i3(16'h00),
+    .i4(16'h00),
+    .i5(16'h00),
+    .i6(16'h00),
+    .i7(16'h00),
+    .y(Bram_address_write_read)
+);
+
 //                     6 OR 5208
-bud9600_gen #(.CYCLE_X(2)) oHz ( CLK,  bud9600_gen); 
+bud9600_gen #(.CYCLE_X(5208)) oHz ( CLK,  bud9600_gen); 
 debounce debounce_inst_comp (
    .clk_in(CLK_FPGA),
    .rst_in(1'b0),
@@ -88,23 +107,30 @@ debounce debounce_inst_uart (
 
 
 BRAM BRAM_read_comp (
-    .clk(CLK),
-    .addr(data_address_comp),
+    .clk(CLK_FPGA),
+    .addr({data_address_comp}),
     .we(1'b0),
     .write_data(8'd0),
     .enable(reg_enable_comp),
     .read_data(read_data_comp_in)
 );
-
-
-
+/*
+blk_mem_gen_0 BRAM_read_comp_a (
+  .clka(CLK_FPGA),               // input wire clka
+  .ena(reg_enable_comp),       // input wire ena
+  .wea(8'd0),                    // input wire [0 : 0] wea
+  .addra(data_address_comp),     // input wire [9 : 0] addra
+  .dina(8'd0),            // input wire [7 : 0] dina
+  .douta(read_data_comp_in[7:0])  // output wire [7 : 0] douta
+);
+*/
 
 report_funct u_report_funct (
     .clk(CLK),
     .reset(computation_reset_button),
     .rpt_bt(rpt_bt),
     .clk_count(clk_count),
-    .in_word(input_word_wire),
+    .in_word(word_report_bit_out),
     .AND_sig_r(AND_sig_r),
     .count_b1(count_b1),
     .count_b2(count_b2),
@@ -138,8 +164,8 @@ mux_16_options #(
 .sel({1'b0,sel_mux}),
 .i0(buffer_byte_01), .i1(count_b1_read[7:0]),
 .i2(buffer_byte_02), .i3(count_b2_read[7:0]),
-.i4(buffer_byte_03), .i5(word_report_read[7:0]),  
-.i6(8'b00000000), .i7(buffer_byte_04),
+.i4(count_b3_read),  .i5(buffer_byte_03),  
+.i6(word_report_read[7:0]), .i7(buffer_byte_04),
 .i8(8'b00000000),   .i9(8'b00000000), .i10(8'b00000000), .i11(8'b00000000),
 .i12(8'b00000000), .i13(8'b00000000), .i14(8'b00000000), .i15(8'b00000000),
 .y(data_uart)
@@ -153,18 +179,7 @@ uart_stream_contrl uart_ctrl (
 .signal_enable_uart(signal_enable_uart),
 .signal_start_enable_uart(signal_start_enable_uart)
 );
-mux_8_options #(.WIDTH(8)) address_mux (
-    .sel({1'b0,reg_enable_comp,signal_enable_uart}),
-    .i0(8'h00),
-    .i1(data_address_bram_read), //01
-    .i2(     adress_bram_write), //10 
-    .i3(8'h00),
-    .i4(8'h00),
-    .i5(8'h00),
-    .i6(8'h00),
-    .i7(8'h00),
-    .y(Bram_address_write_read)
-);
+
 
 uart_state_machine uat_stmch(
     .clk(bud9600_gen),
@@ -178,27 +193,37 @@ uart_state_machine uat_stmch(
 
 
 
-BRAM bram_Read_write_count_b1 (
+BRAM_empty bram_Read_write_count_b1 (
     .clk(CLK_FPGA),
     .addr(Bram_address_write_read),
-    .we(reg_enable_comp),
+    .we(write_enable_to_report),
     .write_data(count_b1),
     .enable(bram_being_used),
     .read_data(count_b1_read[7:0])
 );
-BRAM bram_Read_write_count_b2 (
+BRAM_empty bram_Read_write_count_b2 (
     .clk(CLK_FPGA),
     .addr(Bram_address_write_read),
-    .we(reg_enable_comp),
+    .we(write_enable_to_report),
     .write_data(count_b2),
     .enable(bram_being_used),
     .read_data(count_b2_read[7:0])
 );
 
-BRAM bram_Read_write_w1 (
+BRAM_empty bram_Read_write_count_b3 (
     .clk(CLK_FPGA),
     .addr(Bram_address_write_read),
-    .we(reg_enable_comp),
+    .we(write_enable_to_report),
+    .write_data(count_b3),
+    .enable(bram_being_used),
+    .read_data(count_b3_read[7:0])
+);
+
+
+BRAM_empty bram_Read_write_w1 (
+    .clk(CLK_FPGA),
+    .addr(Bram_address_write_read),
+    .we(write_enable_to_report),
     .write_data(word_report),
     .enable(bram_being_used),
     .read_data(word_report_read[7:0])
@@ -298,8 +323,79 @@ CA_Processor_32STE_8bitword #(
   .rst(computation_reset_button),
  .input_word(input_word_wire),
  .rpt_bt(rpt_bt),
- .Activated_vector_t0(Activated_vector_t0)
+ .Activated_vector_t0(Activated_vector_t0),
+ .word_report_bit_out(word_report_bit_out)
 );
+
+/*
+
+
+CA_Processor_32STE_8bitword #(
+      .ActivationVector_STE1(256'h0000000000000000000000000000000000800000000000000000000000000000), 
+            .STE1_ACTIVATES(32'b00000000000000000000000000000010), 
+     .ActivationVector_STE2(256'h0000000000000000000000000000000000008000000000000000000000000000), 
+            .STE2_ACTIVATES(32'b00000000000000000000000000000100), 
+     .ActivationVector_STE3(256'h0000000000000000000000000000000000040000000000000000000000000000), 
+            .STE3_ACTIVATES(32'b00000000000000000000000000001000), 
+     .ActivationVector_STE4(256'h0000000000000000000000000000000000000010000000000000000000000000), 
+            .STE4_ACTIVATES(32'b00000000000000000000000000010000), 
+     .ActivationVector_STE5(256'h0000000000000000000000000000000000000000000000000002000000000000), 
+            .STE5_ACTIVATES(32'b00000000000000000000000000000000), 
+     .ActivationVector_STE6(256'h0000000000000000000000000000000000800000000000000000000000000000), 
+            .STE6_ACTIVATES(32'b00000000000000000000000001000000), 
+     .ActivationVector_STE7(256'h0000000000000000000000000000000000008000000000000000000000000000), 
+            .STE7_ACTIVATES(32'b00000000000000000000000010000000), 
+     .ActivationVector_STE8(256'h0000000000000000000000000000000000040000000000000000000000000000), 
+            .STE8_ACTIVATES(32'b00000000000000000000000100000000), 
+     .ActivationVector_STE9(256'h0000000000000000000000000000000000000010000000000000000000000000), 
+            .STE9_ACTIVATES(32'b00000000000000000000001000000000), 
+     .ActivationVector_STE10(256'h0000000000000000000000000000000000000000000000000010000000000000), 
+            .STE10_ACTIVATES(32'b00000000000000000000000000000000), 
+     .ActivationVector_STE11(256'h0000000000000000000000000000000000020000000000000000000000000000), 
+            .STE11_ACTIVATES(32'b00000000000000000000100000000000), 
+     .ActivationVector_STE12(256'h0000000000000000000000000000000000100000000000000000000000000000), 
+            .STE12_ACTIVATES(32'b00000000000000000001000000000000), 
+     .ActivationVector_STE13(256'h0000000000000000000000000000000000010000000000000000000000000000), 
+            .STE13_ACTIVATES(32'b00000000000000000010000000000000), 
+     .ActivationVector_STE14(256'h0000000000000000000000000000000000000200000000000000000000000000), 
+            .STE14_ACTIVATES(32'b00000000000000000100000000000000), 
+     .ActivationVector_STE15(256'h0000000000000000000000000000000000000020000000000000000000000000), 
+            .STE15_ACTIVATES(32'b00000000000000000000000000000000), 
+     .ActivationVector_STE16(256'h0000000000000000000000000000000000020000000000000000000000000000), 
+            .STE16_ACTIVATES(32'b00000000000000010000000000000000), 
+     .ActivationVector_STE17(256'h0000000000000000000000000000000000100000000000000000000000000000), 
+            .STE17_ACTIVATES(32'b00000000000000100000000000000000), 
+     .ActivationVector_STE18(256'h0000000000000000000000000000000000800000000000000000000000000000), 
+            .STE18_ACTIVATES(32'b00000000000001000000000000000000), 
+     .ActivationVector_STE19(256'h0000000000000000000000000000000000008000000000000000000000000000), 
+            .STE19_ACTIVATES(32'b00000000000010000000000000000000), 
+     .ActivationVector_STE20(256'h0000000000000000000000000000000000040000000000000000000000000000), 
+            .STE20_ACTIVATES(32'b00000000000000000000000000000000), 
+     .ActivationVector_STE21(256'h0000000000000000000000000000000000800000000000000000000000000000), 
+            .STE21_ACTIVATES(32'b00000000001000000000000000000000), 
+     .ActivationVector_STE22(256'h0000000000000000000000000000000000008000000000000000000000000000), 
+            .STE22_ACTIVATES(32'b00000000010000000000000000000000), 
+     .ActivationVector_STE23(256'h0000000000000000000000000000000000040000000000000000000000000000), 
+            .STE23_ACTIVATES(32'b00000000100000000000000000000000), 
+     .ActivationVector_STE24(256'h0000000000000000000000000000000000000010000000000000000000000000), 
+            .STE24_ACTIVATES(32'b00000000000000000000000000000000), 
+     .ActivationVector_STE25(256'h0000000000000000000000000000000000000000000000000200000000000000), 
+            .STE25_ACTIVATES(32'b00000000000000000000000000000000), 
+     .ActivationVector_STE26(256'h0000000000000000000000000000000000000002000000000000000000000000), 
+            .STE26_ACTIVATES(32'b00000110000000000000000000000000), 
+     .ActivationVector_STE27(256'h0000000000000000000000000000000000000004000000000000000000000000), 
+            .STE27_ACTIVATES(32'b00000000000000000000000000000000), 
+
+      .start_vector(32'b00000111000100001000010000100001), 
+      .end_vector(  32'b00000101100010000100001000010000) 
+) CA_p_v1 ( 
+.clk(CLK), 
+  .rst(computation_reset_button),
+ .input_word(input_word_wire),
+ .rpt_bt(rpt_bt),
+ .Activated_vector_t0(Activated_vector_t0)
+);*/
+
 
 
 endmodule

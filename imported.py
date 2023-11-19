@@ -14,13 +14,23 @@ try:
 
     print(f"Reading from {serial_port}...")
     
-    while True:
-        # Read data from the serial port
-        data = ser.readline()#.decode('utf-8').strip()
-        
-        # Print the received data
-        print(f"Received data: {data}, with length: {len(data)}")
+    file_path_pam = "uart_log.txt"
+    # Open the file in write mode ('w' mode) and create it if it doesn't exist
+    with open(file_path_pam, 'w') as file:
+        # Write each line to the file one by one
+    # file.write("//Automated Tb STARTS Here\n")
+        while True:
+            # Read data from the serial port
+            data = ser.readline()#.decode('utf-8').strip()
+            if len(data) == 8:
+                clk_byte_1 = data[1]
+                clk_byte_2 = data[3]
+                clk_byte_3 = data[4]
+                word_byte =  data[6]
+                str =  f"Cycle Reported {clk_byte_1 + (clk_byte_2<<8)+ (clk_byte_3<<16)} word:{chr(int(word_byte))}, with length: {len(data)} \n"
 
+                file.write(str)
+                print(str)
 except serial.SerialException as e:
     print(f"Error: {e}")
 finally:

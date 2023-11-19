@@ -68,7 +68,8 @@ CA_Processor_32STE_8bitword #(
   .rst(rst),
  .input_word(input_word),
  .rpt_bt(rpt_bt),
- .Activated_vector_t0(Activated_vector_t0)
+ .Activated_vector_t0(Activated_vector_t0),
+ .word_report_bit_out(word_report_bit_out)
 );
 
 */ 
@@ -91,7 +92,10 @@ module In8BitTo256OneHot (
     output wire [255:0] one_hot_encoding
 );
     reg [255:0] one_hot_encoding_reg;
-    integer i;
+ 
+
+
+  integer i;
     always @(*) begin
         one_hot_encoding_reg = 256'b0;
         for (i = 0; i < 256; i = i + 1) begin
@@ -359,6 +363,10 @@ MatchConstant_AUTOMATED #(ActivationVector_STE32) match_STE32 (
 
 
 reg [31:0] STE_MATCH_VECTOR;
+initial begin 
+    STE_MATCH_VECTOR <=  32'b0; 
+ end   
+
 
   always @(posedge clk) begin 
         STE_MATCH_VECTOR <= {output_match_STE32,output_match_STE31,output_match_STE30,output_match_STE29,output_match_STE28,output_match_STE27,output_match_STE26,output_match_STE25,output_match_STE24,output_match_STE23,output_match_STE22,output_match_STE21,output_match_STE20,output_match_STE19,output_match_STE18,output_match_STE17,output_match_STE16,output_match_STE15,output_match_STE14,output_match_STE13,output_match_STE12,output_match_STE11,output_match_STE10,output_match_STE9,output_match_STE8,output_match_STE7,output_match_STE6,output_match_STE5,output_match_STE4,output_match_STE3,output_match_STE2,output_match_STE1}; 
@@ -579,6 +587,10 @@ OneBitToFixedBitsRouter_AUTOMATED #(.SELECT_BITS(STE32_ACTIVATES)) STE32_ROUTER 
  ); 
 
 assign  result_matrix = result_STE1|result_STE2|result_STE3|result_STE4|result_STE5|result_STE6|result_STE7|result_STE8|result_STE9|result_STE10|result_STE11|result_STE12|result_STE13|result_STE14|result_STE15|result_STE16|result_STE17|result_STE18|result_STE19|result_STE20|result_STE21|result_STE22|result_STE23|result_STE24|result_STE25|result_STE26|result_STE27|result_STE28|result_STE29|result_STE30|result_STE31|result_STE32; 
+initial begin 
+   out_bits <=  start_vector; 
+ end   
+
 
 always @(posedge clk) begin
     if (rst == 1'b1) begin //Not active  
@@ -670,7 +682,8 @@ module CA_Processor_32STE_8bitword #(
 (    input wire clk,
     input wire rst,
     input wire  [7:0] input_word,
-    output wire rpt_bt,
+  output wire  [7:0] word_report_bit_out,
+   output wire rpt_bt,
     output wire [31:0] Activated_vector_t0 
 );
 
@@ -761,4 +774,16 @@ Local_Match_AUTOMATED #(
   .report_bit(rpt_bt)             // Match vector output
 );
  
- endmodule 
+ 
+
+
+ reg  [7:0] word_report_bit;
+initial begin 
+ word_report_bit <= 8'b0; 
+ end
+always @(posedge clk) begin  
+  word_report_bit <= input_word;
+end
+assign word_report_bit_out = word_report_bit;
+
+endmodule
