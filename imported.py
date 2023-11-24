@@ -14,23 +14,62 @@ try:
 
     print(f"Reading from {serial_port}...")
     
-    file_path_pam = "uart_log.txt"
+    file_path_pam = "uart_log2.txt"
     # Open the file in write mode ('w' mode) and create it if it doesn't exist
     with open(file_path_pam, 'w') as file:
+        data_trash   = []
         # Write each line to the file one by one
     # file.write("//Automated Tb STARTS Here\n")
+        count = 0
         while True:
             # Read data from the serial port
-            data = ser.readline()#.decode('utf-8').strip()
+            data = ser.readline()#.decode('utf-8').strip()\\
             if len(data) == 8:
+                
                 clk_byte_1 = data[1]
                 clk_byte_2 = data[3]
                 clk_byte_3 = data[4]
                 word_byte =  data[6]
-                str =  f"Cycle Reported {clk_byte_1 + (clk_byte_2<<8)+ (clk_byte_3<<16)} word:{chr(int(word_byte))}, with length: {len(data)} \n"
+                addr_hw   =  data[2]
+                #output =  f"address {count} Cycle Reported {(clk_byte_1 + (clk_byte_2<<8)+ (clk_byte_3<<16))%256} word:{int(word_byte)}\n" #, with length: {len(data)} chr(int(word_byte)) 
+                addres = count#%256
+                Cyc_Rt = (clk_byte_1 + (clk_byte_2<<8)+ (clk_byte_3<<16))
+                word = int(word_byte)
+                
+                output = f"{addres:>9} {Cyc_Rt:>12} {word:>7} \n"
+                #output = f"{addres:>9} {Cyc_Rt:>12} {word:>7} {addr_hw:>6}\n"
+                file.write(output)
+                print(output)
+                count += 1 
+            else:
+                
+                for datum in data:
+                    data_trash.append(datum)
+                print(len(data_trash)," ADDED --------------------------------------------------------")
 
-                file.write(str)
-                print(str)
+                if len(data_trash) == 8:
+                    clk_byte_1 = data_trash[1]
+                    clk_byte_2 = data_trash[3]
+                    clk_byte_3 = data_trash[4]
+                    word_byte =  data_trash[6]
+                    addr_hw   =  data_trash[2]
+                    #output =  f"address {count} Cycle Reported {(clk_byte_1 + (clk_byte_2<<8)+ (clk_byte_3<<16))%256} word:{int(word_byte)}\n" #, with length: {len(data)} chr(int(word_byte)) 
+                    addres = count#%256
+                    Cyc_Rt = (clk_byte_1 + (clk_byte_2<<8)+ (clk_byte_3<<16))
+                    word = int(word_byte)
+                    output = f"{addres:>9} {Cyc_Rt:>12} {word:>7} \n"
+
+                    #output = f"{addres:>9} {Cyc_Rt:>12} {word:>7} {addr_hw:>6}\n"
+                    file.write(output)
+                    print(output," DATA = 8--------------------------------------------------------")
+                    count += 1
+                    data_trash = []
+                elif len(data_trash) > 8:
+                    #data_trash = []
+                    print(len(data_trash),"TRASHED--------------------------------------------------------")
+                    data_trash = []
+                     
+                #print(len(data))
 except serial.SerialException as e:
     print(f"Error: {e}")
 finally:
