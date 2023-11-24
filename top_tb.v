@@ -34,13 +34,15 @@ module top_module();
 // Testbench stimulus
 
     initial begin
-       $display("Simulation started");
+       //$display("Simulation started");
        $dumpfile("testbench.vcd");
        $dumpvars(0, top_module);
        clk = 0;
        SW_test  = 8'b0;
        BTN_test = 8'b0;
-       #500
+       #2000000
+       #2000000
+       
        //#4000
        /*
        BTN_test[3] = 1'b0; #2 BTN_test[3] = 1'b1;       #3; BTN_test[3] = 1'b0;
@@ -88,7 +90,7 @@ module top_module();
         BTN_test[4] = 1'b0;
         #15004
        */
-        $display("Simulation finished");
+        //$display("Simulation finished");
         $finish;
         //$stop; // Stop simulation
     end

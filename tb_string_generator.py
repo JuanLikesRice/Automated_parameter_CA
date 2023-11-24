@@ -16,6 +16,7 @@ file_path = "tb_str"
 file_path_tb_v = file_path + ".txt"
 file_path_coe  = file_path + ".coe"
 file_path_coe_9  = file_path + "_9bit.coe"
+file_path_BRAM_RTL  = file_path + "BRAM_RTL_AUTO.v"
 
 file_path_pam = file_path + f"_BRAM_PAR_{str(BRAM_size)}.txt"
 # Open the file in write mode ('w' mode) and create it if it doesn't exist
@@ -118,10 +119,6 @@ with open(file_path_pam, 'w') as file:
     break_flag = 1 
     file_len  = len(str_var)
     rangg_num = file_len-1
-    
-    
-    
-        
     for char_i in range(BRAM_size):
         if  char_i == 0 and len(str_var) > 0:
             str_num = str(hex(ord(str(str_var[char_i]))))[2:]
@@ -133,8 +130,82 @@ with open(file_path_pam, 'w') as file:
             num_print +=1 
         else:
             file.write(f"    memory[{char_i}] <=  8'h00;    ")
-
 print(f"Lines have been written to '{file_path_pam}' with {num_print} lines of data into the bram .")
+
+
+
+#BRAM_size
+BRAM_BITS = 16
+BRAM_ENTRY = 8
+
+with open(file_path_BRAM_RTL, 'w') as file:
+    num_print = 0
+    break_flag = 1 
+    file_len  = len(str_var)
+    rangg_num = file_len-1
+    
+    file.write("module BRAM_AUTO (\n    input wire clk,           // Clock signal \n")
+    file.write(f"    input wire [{BRAM_BITS-1}:0] addr,    // Address input (8 bits)\n     input wire we,            // Write enable signal\n")
+    file.write(f"    input wire [{BRAM_ENTRY-1}:0] write_data, // Data input ({BRAM_ENTRY} bits)\n")
+    file.write("    input wire enable,        // Enable signal for read and write operations\n")
+    file.write(f"    output reg [{BRAM_ENTRY-1}:0] read_data // Data output (9 bits)\n);\n")
+    file.write(f"  reg [{BRAM_ENTRY-1}:0] memory [0:{BRAM_size-1}]; // {BRAM_size}x{BRAM_ENTRY}-bit Block RAM\n\n")
+    file.write(f"    reg [{BRAM_ENTRY-1}:0] read_data_buff1, read_data_buff2, reg_last_written_data, reg_last_written_addr;\n")
+    file.write(f"    initial begin\nreg_last_written_data <= {BRAM_ENTRY}'b0;\nreg_last_written_addr <= {BRAM_ENTRY}'b0;\n")
+    file.write(f"read_data_buff1 <= {BRAM_ENTRY}'h00;\nread_data_buff2 <= {BRAM_ENTRY}'h00;\nread_data <=   {BRAM_ENTRY}'h00;\n")
+    file.write("\n")
+    file.write("\n")
+    
+    for char_i in range(BRAM_size):
+        if  char_i == 0 and len(str_var) > 0:
+            str_num = str(hex(ord(str(str_var[char_i]))))[2:]
+            file.write(f"    memory[{char_i}] <=  8'h{str_num};    ")
+            num_print +=1 
+        elif char_i < len(str_var):
+            str_num = str(hex(ord(str(str_var[char_i]))))[2:]
+            file.write(f"    memory[{char_i}] <=  8'h{str_num};    ")
+            num_print +=1 
+        else:
+            file.write(f"    memory[{char_i}] <=  8'h00;    ")
+            
+            
+    file.write("\n")   
+            
+
+    file.write("    end\n\n    always @(posedge clk) begin\n        if (enable) begin\n            if (we) begin\n                memory[addr] <= write_data; // Write operation when we and enable are high\n                reg_last_written_data <= write_data;\n                reg_last_written_addr <= addr;\n            end")
+    file.write("\n        read_data_buff2  <= memory[addr]; // Read operation when enable is high\n            read_data_buff1  <= read_data_buff2; // Read operation when enable is high\n            read_data <= read_data_buff1; // Read operation when enable is high\n\n        end\n    end\n \nendmodule\n")
+    file.write("\n\n\n\n\n")
+    num_print = 0
+    break_flag = 1 
+    file_len  = len(str_var)
+    rangg_num = file_len-1
+    
+    file.write("module BRAM_empty_AUTO (\n    input wire clk,           // Clock signal \n")
+    file.write(f"    input wire [{BRAM_BITS-1}:0] addr,    // Address input (8 bits)\n    input wire we,            // Write enable signal\n")
+    file.write(f"    input wire [{BRAM_ENTRY-1}:0] write_data, // Data input ({BRAM_ENTRY} bits)\n")
+    file.write("    input wire enable,        // Enable signal for read and write operations\n")
+    file.write(f"    output reg [{BRAM_ENTRY-1}:0] read_data // Data output (9 bits)\n);\n")
+    file.write(f"  reg [{BRAM_ENTRY-1}:0] memory [0:{BRAM_size-1}]; // {BRAM_size}x{BRAM_ENTRY}-bit Block RAM\n\n")
+    file.write(f"    reg [{BRAM_ENTRY-1}:0] read_data_buff1, read_data_buff2, reg_last_written_data, reg_last_written_addr;\n")
+    file.write(f"    initial begin\nreg_last_written_data <= {BRAM_ENTRY}'b0;\nreg_last_written_addr <= {BRAM_ENTRY}'b0;\n")
+    file.write(f"read_data_buff1 <= {BRAM_ENTRY}'h00;\nread_data_buff2 <= {BRAM_ENTRY}'h00;\nread_data <=   {BRAM_ENTRY}'h00;\n")
+    file.write("\n")
+    file.write("\n")
+    
+    for char_i in range(BRAM_size):
+        file.write(f"    memory[{char_i}] <=  8'h00;  ")
+            
+    file.write("\n")   
+            
+
+    file.write("    end\n\n    always @(posedge clk) begin\n        if (enable) begin\n            if (we) begin\n                memory[addr] <= write_data; // Write operation when we and enable are high\n                reg_last_written_data <= write_data;\n                reg_last_written_addr <= addr;\n            end")
+    file.write("\n        read_data_buff2  <= memory[addr]; // Read operation when enable is high\n            read_data_buff1  <= read_data_buff2; // Read operation when enable is high\n            read_data <= read_data_buff1; // Read operation when enable is high\n\n        end\n    end\n \nendmodule\n")
+    
+    
+    
+    
+print(f"Lines have been written to '{file_path_pam}' with {num_print} lines of data into the bram .")
+
 
 
 STE_BITS = loaded_dict['STE_BITS']

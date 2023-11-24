@@ -106,7 +106,7 @@ debounce debounce_inst_uart (
 //assign computation_reset_button = BTN[3];
 
 
-BRAM BRAM_read_comp (
+BRAM_AUTO BRAM_read_comp (
     .clk(CLK_FPGA),
     .addr({data_address_comp}),
     .we(1'b0),
@@ -165,7 +165,7 @@ mux_16_options #(
 .i0(buffer_byte_01), .i1(count_b1_read[7:0]),
 .i2(buffer_byte_02), .i3(count_b2_read[7:0]),
 .i4(count_b3_read),  .i5(buffer_byte_03),  
-.i6(word_report_read[7:0]), .i7(buffer_byte_04),
+.i6(word_report_read[7:0]), .i7(Bram_address_write_read[7:0]),
 .i8(8'b00000000),   .i9(8'b00000000), .i10(8'b00000000), .i11(8'b00000000),
 .i12(8'b00000000), .i13(8'b00000000), .i14(8'b00000000), .i15(8'b00000000),
 .y(data_uart)
@@ -192,8 +192,26 @@ uart_state_machine uat_stmch(
     );
 
 
+wire [23:0] clk_cycle_reported_all;
 
-BRAM_empty bram_Read_write_count_b1 (
+
+assign clk_cycle_reported_all = {count_b3,count_b2,count_b1};
+always @(posedge CLK_FPGA) begin
+       if (bram_being_used) begin
+       if (write_enable_to_report) begin
+       //$display("address %d Cycle Reported %d word: %d", Bram_address_write_read, count_b1, word_report);
+       //$display("%d %d %d", Bram_address_write_read, clk_cycle_reported_all, word_report);
+       $display("    %d     %d     %d ",Bram_address_write_read, clk_cycle_reported_all, word_report);
+       //$display("Time=%0t: A=%d, B=%d, result=%d", $time, A, B, result);
+       end
+       end
+end
+
+//$display("Time=%0t: A=%d, B=%d, result=%d", $time, A, B, result);
+
+
+
+BRAM_empty_AUTO bram_Read_write_count_b1 (
     .clk(CLK_FPGA),
     .addr(Bram_address_write_read),
     .we(write_enable_to_report),
@@ -201,7 +219,7 @@ BRAM_empty bram_Read_write_count_b1 (
     .enable(bram_being_used),
     .read_data(count_b1_read[7:0])
 );
-BRAM_empty bram_Read_write_count_b2 (
+BRAM_empty_AUTO bram_Read_write_count_b2 (
     .clk(CLK_FPGA),
     .addr(Bram_address_write_read),
     .we(write_enable_to_report),
@@ -210,7 +228,7 @@ BRAM_empty bram_Read_write_count_b2 (
     .read_data(count_b2_read[7:0])
 );
 
-BRAM_empty bram_Read_write_count_b3 (
+BRAM_empty_AUTO bram_Read_write_count_b3 (
     .clk(CLK_FPGA),
     .addr(Bram_address_write_read),
     .we(write_enable_to_report),
@@ -220,7 +238,7 @@ BRAM_empty bram_Read_write_count_b3 (
 );
 
 
-BRAM_empty bram_Read_write_w1 (
+BRAM_empty_AUTO bram_Read_write_w1 (
     .clk(CLK_FPGA),
     .addr(Bram_address_write_read),
     .we(write_enable_to_report),
@@ -258,7 +276,6 @@ blk_mem_gen_0 bram_Read_write_w1 (
 );
 
 */
-
 
 CA_Processor_32STE_8bitword #(
       .ActivationVector_STE1(256'h0000000000000000000000000000000000000004000000000000000000000000), 
@@ -326,7 +343,6 @@ CA_Processor_32STE_8bitword #(
  .Activated_vector_t0(Activated_vector_t0),
  .word_report_bit_out(word_report_bit_out)
 );
-
 /*
 
 
