@@ -17,6 +17,7 @@ def copy_file_to_directory(source_file, destination_directory):
     
 
 
+
 def main():
     if len(sys.argv) > 1:
         dir_run = sys.argv[1]
@@ -29,11 +30,15 @@ def main():
     copy_file_to_directory(source_file, dir_run)
     source_file = 'uart_ex.v'
     copy_file_to_directory(source_file, dir_run)
-    source_file = 'top_module.v'
-    copy_file_to_directory(source_file, dir_run)
+    #source_file = 'top_module.v'
+    #copy_file_to_directory(source_file, dir_run)
     
     variable_to_pass = dir_run
+    print("making Module")
     subprocess.run(['python', 'Auto_AP_module.py', variable_to_pass])#, variable_to_pass])
+    print("Ran Module")
+    print("making BRAM")
+
     variable_to_pass = dir_run
     subprocess.run(['python', 'Auto_TB_BRAM_generator.py', variable_to_pass])#, variable_to_pass])
 

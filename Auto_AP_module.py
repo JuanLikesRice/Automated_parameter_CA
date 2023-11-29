@@ -9,6 +9,8 @@ else:
     sys.exit()
     variable_received = "debug"
 
+print("STARING AUTO_module.py")
+
 
 dir_str_raw = str(variable_received)
 directory_string  = str(variable_received)  +  "\\"
@@ -21,7 +23,7 @@ directory_string  = str(variable_received)  +  "\\"
 
 
 
-reg_exp = "mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"
+#reg_exp = "mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"
 input_file_path = "regex_str.txt"
 
 with open(input_file_path, 'r') as file:
@@ -36,6 +38,8 @@ with open(input_file_path_w, 'w') as file:
 
 Input_word_BITS = 8
 file_path = f"{directory_string}module_AUTOMATED.v"
+file_path_instantiation = f"{directory_string}module_AUTOMATED_CA.txt"
+
 command = f"java -jar C:\juwan_projects\JSON_MAKER\exe.jar --nfa --json \"{str(reg_exp)}\" > {directory_string}graph.json"  # Replace with "/exe.jar file path if need be"
 try:
     output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, text=True)
@@ -78,12 +82,93 @@ def STE_to(hex_string,Input_word_BITS):
     return listy
 
 
-#print(f"")
+
+input_file_path = "top_module.v"
+treat_as_list = []
+with open(input_file_path, 'r') as file:
+    # Iterate through each line in the file
+    for line in file:
+        treat_as_list.append(line)
+    print("pass\n")
+    
+input_file_path_ins = directory_string + input_file_path#"top_module_insert.v"
 
 
 graph_dict = {}
+with open(input_file_path_ins, 'w') as file:
+    print("HERE IS SUCCESSIG\n")
+    for line in treat_as_list:
+        file.write(line)
+        if line =="//STOP_INSERT_0\n":
+            print("STOP_INSERT_0 detected\n")
+            str_v = f"wire [{N_STE_BITS_minus1}:0] Activated_vector_t0; //This line inserted by AUTO SCRIPT\n"
+            file.write(str_v)
 
-# MATCH MODULE --> 
+        if line =="//STOP_INSERT_1\n":
+            str_v = "//MODULEHERE\n\n"#f"wire [{N_STE_BITS_minus1}:0] Activated_vector_t0; //This line inserted by AUTO SCRIPT\n"
+            file.write(str_v)
+            #file.write(f"`timescale 1ns / 1ps \n `default_nettype none\n\n\n")
+
+            #Graph  With proper Bit parameters
+            #file.write(f"/* // Called with parameters, put this into your tb file\n\n\n")
+            file.write(f"CA_Processor_{N_STE_BITS}STE_{Input_word_BITS}bitword #(\n ")
+            start_vect_dec = 0   
+            end_vect_dec   = 0
+            for i in data:
+                STE_i = int(str(i))
+                STE_point_dict = {}
+                STE_point_name = f'STE{STE_i}'
+                if "init" in data[i]:
+                    if (data[i]["init"] == "Always"):
+                        start_vect[N_STE_BITS-STE_i] = "1"
+                        STE_point_dict["init"] = True
+                    else:
+                        STE_point_dict["init"] = False        
+                if "final" in data[i]: 
+                    if (data[i]["final"] == True or data[i]["final"] == "true" ):
+                        end_vect[N_STE_BITS-STE_i] = "1"
+                        STE_point_dict["final"] = True
+                    else:
+                        STE_point_dict["final"] = False
+                if "to" in data[i]:
+                    STE_act = ast.literal_eval(data[i]["to"])
+                else: 
+                    STE_act = []
+                if "cc" in data[i]: 
+                    STE_sense_vector_cc =  data[i]["cc"]
+                else: 
+                    STE_sense_vector_cc = zero_string*Input_word_BITS_val_hex
+                    
+            
+                STE_sense_vector_str =  f"{Input_word_BITS_val}'h" + STE_sense_vector_cc
+            # print("ere",STE_act)
+                STE_activate_vector_str = STE_activates(STE_act, N_STE_BITS)
+                STE_point_dict["to"] = STE_act
+                STE_point_dict["cc"] = STE_to(STE_sense_vector_cc,Input_word_BITS)
+                
+                
+                file.write(f"     .ActivationVector_STE{STE_i}({STE_sense_vector_str}), \n"),
+                file.write(f"            .STE{STE_i}_ACTIVATES({STE_activate_vector_str}), \n")
+            
+                graph_dict[STE_i] = STE_point_dict 
+            
+            start_vect = ''.join(start_vect)
+        # print(start_vect)
+            end_vect = ''.join(end_vect)
+            #print(end_vect)    
+        
+            start_vector_str = f"{N_STE_BITS}'b"+ start_vect
+            end_vector_str = f"{N_STE_BITS}'b"+ end_vect
+            file.write(f"\n      .start_vector({start_vector_str}), \n      .end_vector(  {end_vector_str}) \n) CA_p_v1 ( ") #( \n.clk(clk), \n  .rst(rst),\n .input_word(input_word),\n .rpt_bt(rpt_bt),\n .Activated_vector_t0(Activated_vector_t0),\n .word_report_bit_out(word_report_bit_out)\n);\n\n")    
+            file.write("\n  .clk(CLK), \n  .rst(computation_reset_button),\n  .input_word(input_word_wire),\n  .rpt_bt(rpt_bt),\n  .Activated_vector_t0(Activated_vector_t0),\n  .word_report_bit_out(word_report_bit_out)\n);\n\n\n")
+            file.write(f" \n\n\n\n\n")
+
+
+
+start_vect = list("0"*N_STE_BITS)
+end_vect   = list("0"*N_STE_BITS)
+graph_dict = {}
+
 with open(file_path, 'w') as file:
     file.write(f"`timescale 1ns / 1ps \n `default_nettype none\n\n\n")
 

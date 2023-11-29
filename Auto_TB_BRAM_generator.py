@@ -26,8 +26,7 @@ with open(string_tb_char, 'r') as file:
 with open(file_path_graph, 'r') as json_file:
     loaded_dict = json.load(json_file)
 
-print(f"Dictionary has been loadrd from {file_path_graph} from JSON format.\n This graph imlpements regex: {loaded_dict['reg_exp']} with {loaded_dict['STE_NUM']} encoded STES and {loaded_dict['STE_BITS']} BITS")
-#print(f"string encoded: {str_var} \n which is {len(str_var)} chars long\n Bram size: {BRAM_size}")
+print(f"Dictionary has been loadrd from {file_path_graph} from JSON format.\n This graph imlpements regex: {loaded_dict['reg_exp']} with {loaded_dict['STE_NUM']} encoded STES and {loaded_dict['STE_BITS']} BITS")#print(f"string encoded: {str_var} \n which is {len(str_var)} chars long\n Bram size: {BRAM_size}")
 print(f"string encoded is {len(str_var)} chars long\n Bram size: {BRAM_size}")
 
 file_path = "tb_str"
@@ -37,7 +36,8 @@ file_path_coe_9 = directory_string +file_path + "_9bit.coe"
 file_path_BRAM_RTL = directory_string + file_path + "BRAM_RTL_AUTO.v"
 
 file_path_pam = directory_string + file_path + f"_BRAM_PAR_{str(BRAM_size)}.txt"
-# Open the file in write mode ('w' mode) and create it if it doesn't exist
+
+
 with open(file_path_tb_v, 'w') as file:
     # Write each line to the file one by one
     file.write("//Automated Tb STARTS Here\n")
@@ -266,17 +266,11 @@ def sense(word,graph,STE_BITS):
     str_vect = str(bin(current))[2:]
     final_str_vect = (STE_BITS -  len(str_vect))*"0" + str_vect
     print("sensed:")
-    print(final_str_vect, hex(current), current)
-    #print(str_vect, len(str_vect))
-    #print(final_str_vect)
-    #print("0"*STE_BITS)
-    return current 
-#sense("a",loaded_dict,STE_BITS)
+    print(final_str_vect, hex(current), current)    #print(str_vect, len(str_vect))    #print(final_str_vect)    #print("0"*STE_BITS)
+    return current #sense("a",loaded_dict,STE_BITS)
 
 
-def match(start,active_states,sensed,graph,STE_BITS):
-    #decimal_number = int(binary_sense, 2)
-    
+def match(start,active_states,sensed,graph,STE_BITS):    #decimal_number = int(binary_sense, 2)
     AND_number  = (active_states | start) & sensed
     current = 0     #2STE_BIT    
     for i in range(1,STE_BITS+1):
@@ -284,17 +278,14 @@ def match(start,active_states,sensed,graph,STE_BITS):
         high = 2**(i-1)
         if high == high & AND_number:
             if str_i in graph:
-                if "to" in graph[str_i]:
-                    #print(graph[str_i]["to"])
+                if "to" in graph[str_i]:                    #print(graph[str_i]["to"])
                     for STE_i_to in graph[str_i]["to"]:
                         
                          current |= 2**(STE_i_to-1)    
     str_vect = str(bin(current))[2:]
-    final_str_vect = (STE_BITS -  len(str_vect))*"0" + str_vect
-    #print(str_vect, len(str_vect))
+    final_str_vect = (STE_BITS -  len(str_vect))*"0" + str_vect    #print(str_vect, len(str_vect))
     print("Match:")
-    print(final_str_vect, hex(current), current, "                   <--")
-    #print("0"*STE_BITS)
+    print(final_str_vect, hex(current), current, "                   <--")    #print("0"*STE_BITS)
     return current
 
 
@@ -308,8 +299,7 @@ def sense_number(number,graph,STE_BITS):
             if "cc" in graph[str_i]:
                 #print(i,graph[str_i]["cc"])
                 if word_num in graph[str_i]["cc"]: 
-                    current |= 2**(i-1)    
-                    #print(i,1)
+                    current |= 2**(i-1)                    #print(i,1)
                 else:
                     pass#print(i,0)
         else:
@@ -318,10 +308,7 @@ def sense_number(number,graph,STE_BITS):
     str_vect = str(bin(current))[2:]
     final_str_vect = (STE_BITS -  len(str_vect))*"0" + str_vect
     print("sensed:")
-    print(final_str_vect, hex(current), current)
-    #print(str_vect, len(str_vect))
-    #print(final_str_vect)
-    #print("0"*STE_BITS)
+    print(final_str_vect, hex(current), current)    #print(str_vect, len(str_vect))    #print(final_str_vect)    #print("0"*STE_BITS)
     return current    
 start_vec = start(loaded_dict,STE_BITS)
 print("\n\n\n\ninput: bart")
