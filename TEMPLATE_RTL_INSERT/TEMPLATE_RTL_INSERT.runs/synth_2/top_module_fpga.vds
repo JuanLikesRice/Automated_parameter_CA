@@ -1,0 +1,29 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:48:16 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Mon Nov 13 02:44:51 2023
+# Process ID: 38736
+# Current directory: C:/juwan_projects/Vivado_projects/project_3/project_3.runs/synth_2
+# Command line: vivado.exe -log top_module_fpga.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source top_module_fpga.tcl
+# Log file: C:/juwan_projects/Vivado_projects/project_3/project_3.runs/synth_2/top_module_fpga.vds
+# Journal file: C:/juwan_projects/Vivado_projects/project_3/project_3.runs/synth_2\vivado.jou
+# Running On: Juwan, OS: Windows, CPU Frequency: 3294 MHz, CPU Physical cores: 16, Host memory: 29734 MB
+#-----------------------------------------------------------
+source top_module_fpga.tcl -notrace
+Command: synth_design -top top_module_fpga -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 24412
+ERROR: [Synth 8-2715] syntax error near report_funct [C:/juwan_projects/Vivado_projects/project_3/project_3.srcs/sources_1/new/top_module.v:109]
+INFO: [Synth 8-8750] module 'top_module_fpga' ignored due to previous errors [C:/juwan_projects/Vivado_projects/project_3/project_3.srcs/sources_1/new/top_module.v:312]
+Failed to read verilog 'C:/juwan_projects/Vivado_projects/project_3/project_3.srcs/sources_1/new/top_module.v'
+INFO: [Common 17-83] Releasing license: Synthesis
+7 Infos, 0 Warnings, 0 Critical Warnings and 2 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Synthesis failed - please see the console or run log file for details
+INFO: [Common 17-206] Exiting Vivado at Mon Nov 13 02:45:20 2023...
