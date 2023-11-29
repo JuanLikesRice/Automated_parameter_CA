@@ -196,7 +196,9 @@ always @(posedge CLK_FPGA) begin
        if (write_enable_to_report) begin
        //$display("address %d Cycle Reported %d word: %d", Bram_address_write_read, count_b1, word_report);
        //$display("%d %d %d", Bram_address_write_read, clk_cycle_reported_all, word_report);
-       $display("    %d     %d     %d ",Bram_address_write_read, clk_cycle_reported_all, word_report);
+       //$display("    %d     %d     %d ",Bram_address_write_read, clk_cycle_reported_all, word_report);
+       $display("match at idx:  %d  ", clk_cycle_reported_all);//-3'd6);
+
        //$display("Time=%0t: A=%d, B=%d, result=%d", $time, A, B, result);
        end
        end

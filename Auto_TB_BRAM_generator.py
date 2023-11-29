@@ -154,7 +154,7 @@ with open(file_path_BRAM_RTL, 'w') as file:
     file_len  = len(str_var)
     rangg_num = file_len-1
     
-    file.write("module BRAM_AUTO (\n    input wire clk,           // Clock signal \n")
+    file.write("`timescale 1ps / 1ps \n\n\n module BRAM_AUTO (\n    input wire clk,           // Clock signal \n")
     file.write(f"    input wire [{BRAM_BITS-1}:0] addr,    // Address input (8 bits)\n     input wire we,            // Write enable signal\n")
     file.write(f"    input wire [{BRAM_ENTRY-1}:0] write_data, // Data input ({BRAM_ENTRY} bits)\n")
     file.write("    input wire enable,        // Enable signal for read and write operations\n")

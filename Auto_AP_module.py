@@ -15,12 +15,6 @@ print("STARING AUTO_module.py")
 dir_str_raw = str(variable_received)
 directory_string  = str(variable_received)  +  "\\"
 
-#Varible that should be changed
-#reg_exp = "word1|word4|qtpie|qtwor|word|9|a*b"
-#reg_exp = "[^\r\n]+#[^\x22\r\n]{2049}" #"|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}" # "bat|bar|bart|ar|at|art|car|cat|cart"
-# "(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}" # "bat|bar|bart|ar|at|art|car|cat|cart"
-#"mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"
-
 
 
 #reg_exp = "mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"

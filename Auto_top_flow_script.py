@@ -36,6 +36,9 @@ def run_command_in_directory(directory, command):
 def main():
     if len(sys.argv) > 1:
         dir_run = sys.argv[1]
+        if len(sys.argv) > 2:
+            other_var = sys.argv[2]
+            print(f"Variable received from script_main.py: {other_var}")
         print(f"Variable received from script_main.py: {dir_run}")
     else:
         print("No directory name received, using default debug")
@@ -70,8 +73,16 @@ def main():
     command_to_run = 'vvp simulation_results >> results_sim.txt'
     run_command_in_directory(folder_path, command_to_run)
     print(f"Log finished, all files written in Directory: {dir_run}")
-
     
+    input_file_path = "regex_str.txt"
+
+    with open(input_file_path, 'r') as file:
+    # Iterate through each line in the file
+        for line in file:
+            reg_exp = line
+    command =  f"head -c 65536 tb_string_data_output.txt  | java -jar C:\juwan_projects\JSON_MAKER\exe.jar --match --partial \"{reg_exp}\" >> {dir_run}/results_json.txt"
+    print(f'\n\n\n\nRuning JSON command {command}')
+    subprocess.run(command, shell=True)
 if __name__ == '__main__':
     main()
 
