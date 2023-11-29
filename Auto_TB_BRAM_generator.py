@@ -1,11 +1,23 @@
-import json
+from Auto_top_flow_script import *
 
-file_path_graph = "graph_dict.json"
+if len(sys.argv) > 1:
+    variable_received = sys.argv[1]
+    print(f"Variable received from script_main.py: {variable_received}")
+else:
+    print("No variable received.")
+    variable_received = None
+
+dir_str_raw = str(variable_received)
+directory_string  = str(variable_received)  +  "\\"
+print(directory_string)
+file_path_graph = directory_string + "graph_dict.json"
 BRAM_size = 2**16
-#str_var = "  This text is example data that was stored on BRAM: Hello! This is from the FPGA                  " #" emily is amazing and pretty GF and I think shes so cool and smart and hard working"
 
 
-string_tb_char = 'tb_string_data_output.txt'
+string_tb_char = "tb_string_data_output.txt"
+
+copy_file_to_directory(string_tb_char, dir_str_raw)
+
 with open(string_tb_char, 'r') as file:
     str_var = file.read()[:BRAM_size]
 
@@ -17,12 +29,12 @@ print(f"Dictionary has been loadrd from {file_path_graph} from JSON format.\n Th
 print(f"string encoded is {len(str_var)} chars long\n Bram size: {BRAM_size}")
 
 file_path = "tb_str"
-file_path_tb_v = file_path + ".txt"
-file_path_coe  = file_path + ".coe"
-file_path_coe_9  = file_path + "_9bit.coe"
-file_path_BRAM_RTL  = file_path + "BRAM_RTL_AUTO.v"
+file_path_tb_v = directory_string + file_path + ".txt"
+file_path_coe  = directory_string + file_path + ".coe"
+file_path_coe_9 = directory_string +file_path + "_9bit.coe"
+file_path_BRAM_RTL = directory_string + file_path + "BRAM_RTL_AUTO.v"
 
-file_path_pam = file_path + f"_BRAM_PAR_{str(BRAM_size)}.txt"
+file_path_pam = directory_string + file_path + f"_BRAM_PAR_{str(BRAM_size)}.txt"
 # Open the file in write mode ('w' mode) and create it if it doesn't exist
 with open(file_path_tb_v, 'w') as file:
     # Write each line to the file one by one
@@ -32,7 +44,6 @@ with open(file_path_tb_v, 'w') as file:
         file.write(f"input_word = 8'd{str_num}; // {char}, hex {str(hex(ord(str(char))))[2:]}\n")
         file.write("#10; \n")
     file.write("//Automated Tb ENDS Here\n")
-# Print a message to confirm that the lines have been written
 print(f"Lines have been written to '{file_path_tb_v}'.")
 
 with open(file_path_coe, 'w') as file:
@@ -73,7 +84,6 @@ print(f"Lines have been written to '{file_path_coe}' with {num_print} lines of d
 
 
 with open(file_path_coe_9, 'w') as file:
-    # Write each line to the file one by one#file.write("//Automated Tb STARTS Here\n")
     file.write("memory_initialization_radix=16;\n")
     file.write("memory_initialization_vector=  \n")
     num_print = 0
@@ -116,9 +126,6 @@ print(f"Lines have been written to '{file_path_coe}' with {num_print} lines of d
 
 
 with open(file_path_pam, 'w') as file:
-    # Write each line to the file one by one#file.write("//Automated Tb STARTS Here\n")
-   #file.write("memory_initialization_radix=16;\n")
-   #file.write("memory_initialization_vector=  \n")
     num_print = 0
     break_flag = 1 
     file_len  = len(str_var)
@@ -136,9 +143,6 @@ with open(file_path_pam, 'w') as file:
             file.write(f"    memory[{char_i}] <=  8'h00;    ")
 print(f"Lines have been written to '{file_path_pam}' with {num_print} lines of data into the bram .")
 
-
-
-#BRAM_size
 BRAM_BITS = 16
 BRAM_ENTRY = 8
 
@@ -326,33 +330,3 @@ i = 1
 print(len(str_var))
 
 
-
-#sensed    = sense("b",loaded_dict,STE_BITS)
-#sense("a",loaded_dict,STE_BITS)
-#for char in str_var:
- #   print(f"CYCLE {i} -------------------")
-  #  i+=1
-   # match_i = match(start_vec,match_i,sense(char,loaded_dict,STE_BITS),loaded_dict,STE_BITS)
-#match_1 = match(start_vec,match_0,sense("b",loaded_dict,STE_BITS),loaded_dict,STE_BITS)
-#match_2 = match(start_vec,match_1,sense("a",loaded_dict,STE_BITS),loaded_dict,STE_BITS)
-#match_3 = match(start_vec,match_1,sense("r",loaded_dict,STE_BITS),loaded_dict,STE_BITS)
-#match_4 = match(start_vec,match_1,sense("t",loaded_dict,STE_BITS),loaded_dict,STE_BITS)
-#file.write("//Automated Tb ENDS Here\n")
-# Print a message to confirm that the lines have been written
-#memory_initialization_radix=16;
-#memory_initialization_vector=ff;
-#print(graph_dict)
-#for keys in loaded_dict:
- #   print(keys,loaded_dict[keys])
-#print("0-->char: ",chr(0))
-#print("char \" \" -->: ",ord(' ')
-#str_var = "bArTtBaRtXaTkShCfIwHaTaNaBaCaTaBaRcAhDuCtAdAaCaRcTrCaTrCaTcBaTbRcAtRnBaCaTySnCtAnBaCrNtAbTnArBxTaR"
-#str_var = "BARTTBARTXATKSHCFIWHATANABACATABARCAHDUCTADAACARCTRCATRCATCBATBRCATRNBACATYSNCTANBACRNTABTNARBXTAR"
-
-'''
-for char in str_var
-    str_num = ord(str(char))
-    file.write(f"input_word = 8'd{str_num}; // {char}, hex {str(hex(ord(str(char))))[2:]}\n")
-    file.write("#10; \n")
-file.write("//Automated Tb ENDS Here\n")
-'''

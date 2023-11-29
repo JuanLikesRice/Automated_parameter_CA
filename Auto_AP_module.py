@@ -2,6 +2,20 @@ import json
 import subprocess
 import math
 import ast
+
+from Auto_top_flow_script import *
+
+if len(sys.argv) > 1:
+    variable_received = sys.argv[1]
+    print(f"Variable received from script_main.py: {variable_received}")
+else:
+    print("No variable received.")
+    variable_received = None
+
+
+dir_str_raw = str(variable_received)
+directory_string  = str(variable_received)  +  "\\"
+
 #Varible that should be changed
 #reg_exp = "word1|word4|qtpie|qtwor|word|9|a*b"
 #reg_exp = "[^\r\n]+#[^\x22\r\n]{2049}" #"|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}" # "bat|bar|bart|ar|at|art|car|cat|cart"
@@ -9,13 +23,13 @@ import ast
 #"mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"
 reg_exp = "mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"
 Input_word_BITS = 8
-file_path = "module_AUTOMATED.v"
-command = f"java -jar C:\juwan_projects\JSON_MAKER\exe.jar --nfa --json \"{str(reg_exp)}\" > graph.json"  # Replace with "/exe.jar file path if need be"
+file_path = f"{directory_string}module_AUTOMATED.v"
+command = f"java -jar C:\juwan_projects\JSON_MAKER\exe.jar --nfa --json \"{str(reg_exp)}\" > {directory_string}graph.json"  # Replace with "/exe.jar file path if need be"
 try:
     output = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT, text=True)
 except subprocess.CalledProcessError as e:
     print("Error occurred:", e)
-f = open('graph.json')
+f = open(f'{directory_string}graph.json')
 data = json.load(f)
 f.close()
 
@@ -247,7 +261,7 @@ graph_dict["STE_BITS"]         = N_STE_BITS
 graph_dict["reg_exp"]         = reg_exp
 graph_dict["Input_word_BITS"] = Input_word_BITS
 
-file_path_graph = "graph_dict.json"
+file_path_graph = f"{directory_string}graph_dict.json"
 
 with open(file_path_graph, 'w') as json_file:
     json.dump(graph_dict, json_file)
@@ -263,21 +277,3 @@ print(f"Dictionary has been written to '{file_path_graph}' in JSON format.")
 
     
     
-    
-
-'''
-
-
-def STE_sense_vector(list,Input_word_BITS):
-    Input_word_BITS_val = 2**(Input_word_BITS)
-    Input_word_BITS_val_hex = int(Input_word_BITS_val /  4  )
-
-    num_i_bit = 0
-    for i in range(len(list)):
-        str_num = ord(list[i])
-        num_i_bit += 2**(str_num)
-    num_i =hex(num_i_bit) 
-    ste_vect_string =f"{Input_word_BITS_val}'h"+"0"*(Input_word_BITS_val_hex-(len(num_i)-2))+num_i[2:]
-    return ste_vect_string
-
-'''
