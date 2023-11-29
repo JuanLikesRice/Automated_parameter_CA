@@ -1,16 +1,13 @@
-import json
-import subprocess
-import math
-import ast
-
 from Auto_top_flow_script import *
 
 if len(sys.argv) > 1:
     variable_received = sys.argv[1]
     print(f"Variable received from script_main.py: {variable_received}")
 else:
-    print("No variable received.")
-    variable_received = None
+    print("NO file_name received.")
+    print("ERROR, NOT RUNNING FROM TOP. Exiting script.")
+    sys.exit()
+    variable_received = "debug"
 
 
 dir_str_raw = str(variable_received)
@@ -21,7 +18,22 @@ directory_string  = str(variable_received)  +  "\\"
 #reg_exp = "[^\r\n]+#[^\x22\r\n]{2049}" #"|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}" # "bat|bar|bart|ar|at|art|car|cat|cart"
 # "(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}" # "bat|bar|bart|ar|at|art|car|cat|cart"
 #"mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"
+
+
+
 reg_exp = "mi.....ft|b[aeiou]bble|[Bb]rainf\*\*k|g(oog)+le|^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]|(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}|bat|bar|bart|ar|at|art|car|cat|cart|word1|word4|qtpie|qtwor|word|9|a*b"
+input_file_path = "regex_str.txt"
+
+with open(input_file_path, 'r') as file:
+    # Iterate through each line in the file
+    for line in file:
+        reg_exp = line
+        
+input_file_path_w = directory_string + input_file_path 
+with open(input_file_path_w, 'w') as file:
+    file.write(reg_exp)
+    print(f"reg_exp used was stored to {input_file_path_w}")
+
 Input_word_BITS = 8
 file_path = f"{directory_string}module_AUTOMATED.v"
 command = f"java -jar C:\juwan_projects\JSON_MAKER\exe.jar --nfa --json \"{str(reg_exp)}\" > {directory_string}graph.json"  # Replace with "/exe.jar file path if need be"

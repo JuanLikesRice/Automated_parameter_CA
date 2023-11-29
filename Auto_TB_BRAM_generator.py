@@ -4,8 +4,10 @@ if len(sys.argv) > 1:
     variable_received = sys.argv[1]
     print(f"Variable received from script_main.py: {variable_received}")
 else:
-    print("No variable received.")
-    variable_received = None
+    print("NO file_name received.")
+    print("ERROR, NOT RUNNING FROM TOP. Exiting script.")
+    sys.exit()
+    variable_received = "debug"
 
 dir_str_raw = str(variable_received)
 directory_string  = str(variable_received)  +  "\\"
