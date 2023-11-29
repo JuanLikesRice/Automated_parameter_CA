@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.runs/synth_1/top_module.tcl"
+  variable script "C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.runs/synth_1/top_module.tcl"
   variable category "vivado_synth"
 }
 
@@ -70,30 +70,29 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
-set_param chipscope.maxJobs 4
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a100tcsg324-1
 
 set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
-set_property webtalk.parent_dir C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.cache/wt [current_project]
-set_property parent.project_path C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.xpr [current_project]
+set_property webtalk.parent_dir C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.cache/wt [current_project]
+set_property parent.project_path C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.xpr [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
 set_property board_part_repo_paths {C:/Users/Turog/AppData/Roaming/Xilinx/Vivado/2022.1/xhub/board_store/xilinx_board_store} [current_project]
 set_property board_part digilentinc.com:nexys4_ddr:part0:1.1 [current_project]
-set_property ip_output_repo c:/juwan_projects/Vivado_projects/project_STE128/project_STE128.cache/ip [current_project]
+set_property ip_output_repo c:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.cache/ip [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 add_files C:/Users/Turog/Downloads/ip.coe
-add_files C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/sources_1/ip/blk_mem_gen_0/ip.coe
+add_files C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/sources_1/ip/blk_mem_gen_0/ip.coe
 read_verilog -library xil_defaultlib {
-  C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/sources_1/new/AUTOMATED_RTL.v
-  C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/sources_1/new/BRAM_AUTOMATED.v
-  C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/sources_1/new/COM.v
-  C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/sources_1/new/top_module.v
+  C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/sources_1/new/AUTOMATED_RTL.v
+  C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/sources_1/new/BRAM_AUTOMATED.v
+  C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/sources_1/new/COM.v
+  C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/sources_1/new/top_module.v
 }
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
@@ -104,8 +103,8 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
-read_xdc C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc
-set_property used_in_implementation false [get_files C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc]
+read_xdc C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc
+set_property used_in_implementation false [get_files C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc]
 
 set_param ips.enableIPCacheLiteLoad 1
 

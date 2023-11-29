@@ -17,7 +17,7 @@ proc create_report { reportName command } {
   }
 }
 namespace eval ::optrace {
-  variable script "C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.runs/impl_1/top_module.tcl"
+  variable script "C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.runs/impl_1/top_module.tcl"
   variable category "vivado_impl"
 }
 
@@ -131,15 +131,15 @@ OPTRACE "create in-memory project" START { }
   set_param project.singleFileAddWarning.threshold 0
 OPTRACE "create in-memory project" END { }
 OPTRACE "set parameters" START { }
-  set_property webtalk.parent_dir C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.cache/wt [current_project]
-  set_property parent.project_path C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.xpr [current_project]
-  set_property ip_output_repo C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.cache/ip [current_project]
+  set_property webtalk.parent_dir C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.cache/wt [current_project]
+  set_property parent.project_path C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.xpr [current_project]
+  set_property ip_output_repo C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.cache/ip [current_project]
   set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "set parameters" END { }
 OPTRACE "add files" START { }
-  add_files -quiet C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.runs/synth_1/top_module.dcp
+  add_files -quiet C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.runs/synth_1/top_module.dcp
 OPTRACE "read constraints: implementation" START { }
-  read_xdc C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc
+  read_xdc C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc
 OPTRACE "read constraints: implementation" END { }
 OPTRACE "add files" END { }
 OPTRACE "link_design" START { }

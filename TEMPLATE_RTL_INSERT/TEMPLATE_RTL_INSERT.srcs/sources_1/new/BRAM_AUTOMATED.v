@@ -18,9 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
-
-
 module BRAM_AUTO (
     input wire clk,           // Clock signal 
     input wire [15:0] addr,    // Address input (8 bits)
@@ -100,7 +97,4 @@ read_data <=   8'h00;
     end
  
 endmodule
-
-
-
 

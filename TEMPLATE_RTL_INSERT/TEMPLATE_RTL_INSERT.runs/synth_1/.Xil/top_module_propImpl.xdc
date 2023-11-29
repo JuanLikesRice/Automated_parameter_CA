@@ -1,4 +1,4 @@
-set_property SRC_FILE_INFO {cfile:C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc rfile:../../../project_STE128.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc id:1} [current_design]
+set_property SRC_FILE_INFO {cfile:C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc rfile:../../../TEMPLATE_RTL_INSERT.srcs/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc id:1} [current_design]
 set_property src_info {type:XDC file:1 line:7 export:INPUT save:INPUT read:READ} [current_design]
 set_property PACKAGE_PIN E3 [get_ports CLK]
 set_property src_info {type:XDC file:1 line:11 export:INPUT save:INPUT read:READ} [current_design]

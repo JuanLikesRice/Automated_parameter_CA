@@ -1,0 +1,8 @@
+1c1
+<         0            0       0 
+---
+> VCD info: dumpfile testbench.vcd opened for output.
+6383c6383
+<      6382            0       0 
+---
+> top_tb.v:94: $finish called at 4000000 (1ps)

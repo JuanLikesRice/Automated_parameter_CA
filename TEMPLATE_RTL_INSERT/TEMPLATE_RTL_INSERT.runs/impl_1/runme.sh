@@ -24,7 +24,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/juwan_projects/Vivado_projects/project_STE128/project_STE128.runs/impl_1'
+HD_PWD='C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.runs/impl_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

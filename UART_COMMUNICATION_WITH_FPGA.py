@@ -14,7 +14,9 @@ try:
 
     print(f"Reading from {serial_port}...")
     
-    file_path_pam = "uart_log2.txt"
+    #file_path_pam = "uart_log2.txt"
+    file_path_pam = "results_hw.txt"
+
     # Open the file in write mode ('w' mode) and create it if it doesn't exist
     with open(file_path_pam, 'w') as file:
         data_trash   = []

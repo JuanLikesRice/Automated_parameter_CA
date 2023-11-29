@@ -1,0 +1,15 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:48:16 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Tue Nov 28 23:43:51 2023
+# Process ID: 27148
+# Current directory: C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent21768 C:\Users\Turog\OneDrive\Documents\GitHub\Automated_parameter_CA\TEMPLATE_RTL_INSERT\TEMPLATE_RTL_INSERT.xpr
+# Log file: C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/vivado.log
+# Journal file: C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT\vivado.jou
+# Running On: Juwan, OS: Windows, CPU Frequency: 3294 MHz, CPU Physical cores: 16, Host memory: 29734 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/Turog/OneDrive/Documents/GitHub/Automated_parameter_CA/TEMPLATE_RTL_INSERT/TEMPLATE_RTL_INSERT.xpr
+update_compile_order -fileset sources_1

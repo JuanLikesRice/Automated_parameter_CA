@@ -45,6 +45,9 @@ def main():
     copy_file_to_directory(source_file, dir_run)
     source_file = 'uart_ex.v'
     copy_file_to_directory(source_file, dir_run)
+    
+    source_file = 'UART_COMMUNICATION_WITH_FPGA.py'
+    copy_file_to_directory(source_file, dir_run)
     #source_file = 'top_module.v'
     #copy_file_to_directory(source_file, dir_run)
     
@@ -64,7 +67,7 @@ def main():
 
     run_command_in_directory(folder_path, command_to_run)
     folder_path = dir_run
-    command_to_run = 'vvp simulation_results >> sim_results'
+    command_to_run = 'vvp simulation_results >> results_sim.txt'
     run_command_in_directory(folder_path, command_to_run)
     print(f"Log finished, all files written in Directory: {dir_run}")
 

@@ -8,7 +8,7 @@
     <Filter Type="Srcs"/>
     <File Path="$PSRCDIR/sources_1/new/AUTOMATED_RTL.v">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../../nexyddr4_working_ca_v1/nexyddr4_working_ca_v1.srcs/sources_1/new/AUTOMATED_RTL.v"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../juwan_projects/nexyddr4_working_ca_v1/nexyddr4_working_ca_v1.srcs/sources_1/new/AUTOMATED_RTL.v"/>
         <Attr Name="ImportTime" Val="1699850469"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
@@ -17,7 +17,7 @@
     </File>
     <File Path="$PSRCDIR/sources_1/new/COM.v">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../../nexyddr4_working_ca_v1/nexyddr4_working_ca_v1.srcs/sources_1/new/COM.v"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../juwan_projects/nexyddr4_working_ca_v1/nexyddr4_working_ca_v1.srcs/sources_1/new/COM.v"/>
         <Attr Name="ImportTime" Val="1699850461"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
@@ -26,14 +26,14 @@
     </File>
     <File Path="$PSRCDIR/sources_1/new/top_module.v">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../../nexy4_ddr_template/nexy4_ddr_template.srcs/sources_1/new/top_module.v"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../juwan_projects/nexy4_ddr_template/nexy4_ddr_template.srcs/sources_1/new/top_module.v"/>
         <Attr Name="ImportTime" Val="1698556018"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PPRDIR/../../../Users/Turog/Downloads/ip.coe">
+    <File Path="$PPRDIR/../../../../../Downloads/ip.coe">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
@@ -41,7 +41,7 @@
     </File>
     <File Path="$PSRCDIR/sources_1/ip/blk_mem_gen_0/ip.coe">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../project_2/project_2.srcs/sources_1/ip/blk_mem_gen_0/ip.coe"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../juwan_projects/Vivado_projects/project_2/project_2.srcs/sources_1/ip/blk_mem_gen_0/ip.coe"/>
         <Attr Name="ImportTime" Val="1699864685"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="simulation"/>
@@ -57,7 +57,7 @@
     <Filter Type="Constrs"/>
     <File Path="$PSRCDIR/constrs_1/imports/Downloads/Nexys4DDR_Master.xdc">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../../../Users/Turog/Downloads/Nexys4DDR_Master.xdc"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../../../../../Downloads/Nexys4DDR_Master.xdc"/>
         <Attr Name="ImportTime" Val="1698555223"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
@@ -70,7 +70,7 @@
   </FileSet>
   <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
     <Filter Type="Utils"/>
-    <File Path="$PPRDIR/../../nexy4_ddr_template/nexy4_ddr_template.srcs/utils_1/imports/synth_1/top_module.dcp">
+    <File Path="$PPRDIR/../../../../../../../juwan_projects/nexy4_ddr_template/nexy4_ddr_template.srcs/utils_1/imports/synth_1/top_module.dcp">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
