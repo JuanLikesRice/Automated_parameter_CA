@@ -7,7 +7,7 @@
 // CLK count = 5208
 //////////////////////////////////////////////////////////////////////////////////
 
-module top_module_fpga (
+module top_module (
     input  wire CLK,
    // input  wire CPU_RESETN,
     input  wire [7:0] SW,
@@ -118,16 +118,7 @@ BRAM_AUTO BRAM_read_comp (
     .enable(reg_enable_comp),
     .read_data(read_data_comp_in)
 );
-/*
-blk_mem_gen_0 BRAM_read_comp_a (
-  .clka(CLK_FPGA),               // input wire clka
-  .ena(reg_enable_comp),       // input wire ena
-  .wea(8'd0),                    // input wire [0 : 0] wea
-  .addra(data_address_comp),     // input wire [9 : 0] addra
-  .dina(8'd0),            // input wire [7 : 0] dina
-  .douta(read_data_comp_in[7:0])  // output wire [7 : 0] douta
-);
-*/
+
 
 report_funct u_report_funct (
     .clk(CLK),

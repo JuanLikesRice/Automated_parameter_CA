@@ -1,7 +1,7 @@
 `timescale 1ps / 1ps 
  `default_nettype none
 
-module top_module();
+module top_module_tb();
 
     //Bram write to  
     //reg [7:0] data_address;
@@ -13,7 +13,7 @@ module top_module();
     reg  [7:0] SW_test, BTN_test; 
     wire UART_RXD_OUT;
 
-    top_module_fpga testy (
+    top_module testy (
     .CLK(clk),
     .SW(SW_test),//[7:0],
     .BTN(BTN_test), //[7:0] 
@@ -36,12 +36,12 @@ module top_module();
     initial begin
        //$display("Simulation started");
        $dumpfile("testbench.vcd");
-       $dumpvars(0, top_module);
+       $dumpvars(0, top_module_tb);
        clk = 0;
        SW_test  = 8'b0;
        BTN_test = 8'b0;
-       #2000000
-       #2000000
+       #2000//000
+       //#2000000
        
        //#4000
        /*
